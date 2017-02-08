@@ -21,7 +21,7 @@ class turing_machine:
                     accion = self.tabla_transicion[tupla]
                     if isinstance(accion, tupla_transicion):
                         self.current_state = accion.estado
-                        print self.cinta[self.current_position], accion.caracter, accion.direccion, accion.estado
+                        print(self.cinta[self.current_position], accion.caracter, accion.direccion, accion.estado)
                         self.cinta[self.current_position] = accion.caracter
                         if accion.direccion == 'l':
                             self.current_position = self.current_position - 1
@@ -50,5 +50,5 @@ stri = '01110@'
 
 tm = turing_machine(MT,stri)
 result = tm.strart()
-print  result
-print tm.current_state, tm.current_position
+print(result)
+print(tm.current_state, tm.current_position)
