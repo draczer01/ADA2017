@@ -43,8 +43,8 @@ MT = dict()
 MT["('s', '0')"] = tupla_transicion('s', '0', 'r')
 MT["('s', '1')"] = tupla_transicion('s', '1', 'r')
 MT["('s', '@')"] = tupla_transicion('t', '@', 'l')
-MT["('t', '1')"] = tupla_transicion('Si', '1', 'o')
-MT["('t', '0')"] = tupla_transicion('No', '0', 'o')
+MT["('t', '1')"] = tupla_transicion('No', '1', 'o')
+MT["('t', '0')"] = tupla_transicion('Si', '0', 'o')
 
 stri = '01110@'
 
