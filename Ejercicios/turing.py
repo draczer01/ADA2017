@@ -17,7 +17,7 @@ class turing_machine:
             while (self.current_state!= 'Alto' or self.current_state!= 'Si' or self.current_state!= 'No' or self.current_state !='Error'):
                 car = self.cinta[self.current_position]
                 tupla = "('" + self.current_state + "', '" + car + "')"
-                if self.tabla_transicion.has_key(tupla):
+                if  tupla in self.tabla_transicion:
                     accion = self.tabla_transicion[tupla]
                     if isinstance(accion, tupla_transicion):
                         self.current_state = accion.estado
@@ -39,16 +39,16 @@ class turing_machine:
 
 
 
-MT = dict()
-MT["('s', '0')"] = tupla_transicion('s', '0', 'r')
-MT["('s', '1')"] = tupla_transicion('s', '1', 'r')
-MT["('s', '@')"] = tupla_transicion('t', '@', 'l')
-MT["('t', '1')"] = tupla_transicion('No', '1', 'o')
-MT["('t', '0')"] = tupla_transicion('Si', '0', 'o')
-
-stri = '01110@'
-
-tm = turing_machine(MT,stri)
-result = tm.strart()
-print(result)
-print(tm.current_state, tm.current_position)
+# MT = dict()
+# MT["('s', '0')"] = tupla_transicion('s', '0', 'r')
+# MT["('s', '1')"] = tupla_transicion('s', '1', 'r')
+# MT["('s', '@')"] = tupla_transicion('t', '@', 'l')
+# MT["('t', '1')"] = tupla_transicion('No', '1', 'o')
+# MT["('t', '0')"] = tupla_transicion('Si', '0', 'o')
+#
+# stri = '01110@'
+#
+# tm = turing_machine(MT,stri)
+# result = tm.strart()
+# print(result)
+# print(tm.current_state, tm.current_position)
