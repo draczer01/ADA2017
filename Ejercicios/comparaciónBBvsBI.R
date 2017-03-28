@@ -9,6 +9,6 @@ bw = a[a$Group.1 == "bin",]
 largo = bw$Group.2
 peor = aw$V1
 mejor = bw$V1
-plot(largo, peor, col="green", pch=16)
+plot(largo, peor, col="blue", pch=16)
 #par(new=TRUE)
 points(largo, mejor, col="red", pch=16)

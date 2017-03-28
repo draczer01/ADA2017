@@ -34,13 +34,14 @@ class Vertex:
         self._neighbors[_neighbor] = _weight
 
 class Graph:
-    def __init__(self, name):
+    def __init__(self, name, directed = False):
         self._vertices = dict()
         self._id = name
+        self._directed = directed
         self._complete = None
-        self._simple = None
+        self._tree = None
         self.cyclic = None
-        self._conect = None
+        self._connect = None
     @property
     def vertices(self):
         return self._vertices
@@ -55,15 +56,25 @@ class Graph:
 
     @property
     def complete(self):
-        if self._complete == None:
+        if self._complete is None:
             self._complete = self.iscomplete()
         return self._complete
 
     @property
-    def simple(self):
-        if self._simple == None:
-            self._simple = self.issimple()
-        return self._simple
+    def connected(self):
+        if self._connect is None:
+            self._connect = self.isconnected()
+        return self._connect
+
+    @property
+    def tree(self):
+        if self._tree is None:
+            self._tree = self.istree()
+        return self._tree
+
+    @property
+    def directed(self):
+        return self._directed
 
     def __getitem__(self, item):
         res = None
@@ -85,6 +96,10 @@ class Graph:
         result = 'Graph: ' + str(self.id) + '\n'
         result += 'Number of vertices: ' + str(self.cardinal) + '\n'
         result += 'Number of edges: ' + str(self.getNumberEdges()) + '\n'
+        result += 'Directed: ' + str(self.directed) +'\n'
+        result += 'Connected: ' + str(self.connected) +'\n'
+        result += 'Complete: ' + str(self.complete) +'\n'
+        result += 'Tree: ' + str(self.tree) +'\n'
         for v in (self._vertices):
             result += str(self._vertices[v]) + '\n'
         return result
@@ -95,7 +110,7 @@ class Graph:
                 self._vertices[_vertex_obj.id] = _vertex_obj
         return _vertex_obj
 
-    def add_edge(self, _begin, _end, _weight=1, directed=False):
+    def add_edge(self, _begin, _end, _weight=1):
         if isinstance(_begin, Vertex):
             beg = _begin
             self.add_vertex(beg)
@@ -109,8 +124,8 @@ class Graph:
             if _end in self._vertices.keys():
                 end = self._vertices[_end]
 
-        print(beg.id, end.id, _weight, directed)
-        if not directed:
+        # print(beg.id, end.id, _weight)
+        if not self.directed:
             self._vertices[end.id].add_neighbor(beg.id, _weight)
         self._vertices[beg.id].add_neighbor(end.id, _weight)
 
@@ -172,12 +187,21 @@ class Graph:
             for w in workers:
                 result = result and w.get()
         return result
-    def issimple(self):
-        result = False
 
+    def istree(self):
+        result = False
+        if self.conected and (((self.getNumberEdges() if not self.directed else self.getNumberEdges()/2) -1) == self.cardinal):
+            result = True
+        return result
+
+    def isconnected(self):
+        result = False
+        bfs = self.deepfirstsearch(None)
+        if bfs.cardinal == self.cardinal:
+            result = True
+        return result
 
     def iscyclic(self):
-
         return False
 
     def getNumberEdges(self):
@@ -185,24 +209,34 @@ class Graph:
         for v in self.vertices:
                 edges+= len(self._vertices[v].neighbors)
         return edges
-	
+
     def deepfirstsearch(self, v):
+        if not v or v is None:
+            v = self[random.choice(list(self.vertices))]
+        g = Graph('DFS: ' + self.id)
+        g.add_vertex(Vertex(v.id, v.value))
         p = [v]
         l = set()
         while len(p)>0:
             av = p[-1]
             l.add(av.id)
-            print(av.id)
+            # print(av.id)
             if len(av.neighbors) > 0:
                 cl = list(set(av.neighbors)-l)
                 if len(cl) > 0:
                     dv = random.choice(cl)
                     p.append(self[dv])
+                    g.add_edge(Vertex(av.id, av.value),Vertex(dv,self[dv].value), len(p)-1)
                     continue
             p.pop()
-        
-    def bfirstsearch(self, v):
-        levels = {v.id:0}
+        return g
+
+    def breadthfirstsearch(self, v):
+        if not v or v is None:
+            v = self[random.choice(list(self.vertices))]
+        g = Graph('BFS: ' + self.id)
+        g.add_vertex(Vertex(v.id, v.value))
+        levels = {v.id: 0}
         sig = [v]
         print(v.id, levels[v.id])
         while len(sig) > 0:
@@ -214,6 +248,7 @@ class Graph:
                         print(n, levels[l.id])
                         levels[n]= levels[l.id]+1
                         mark.append(self[n])
+                        g.add_edge(l.id, Vertex(n, self[n].value), levels[n])
             sig = mark            
-    
+        return g
                     
