@@ -1,0 +1,6 @@
+datos = read.csv("~/pyprojects/ADA2017/Ejercicios/val.dat", sep=" ", header=FALSE)
+a = aggregate(datos, by=list(datos$V2), mean)
+plot(a$Group1, a$V1, col="blue", pch=16)
+
+
+points(largo, mejor, col="red", pch=16)
