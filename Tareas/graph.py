@@ -111,18 +111,25 @@ class Graph:
         return _vertex_obj
 
     def add_edge(self, _begin, _end, _weight=1):
+#        beg, end = None, None
         if isinstance(_begin, Vertex):
             beg = _begin
             self.add_vertex(beg)
         else:
             if _begin in self._vertices.keys():
                 beg = self._vertices[_begin]
+            else:
+                beg = Vertex(_begin, None)
+                self.add_vertex(beg)
         if isinstance(_end, Vertex):
             end = _end
             self.add_vertex(end)
         else:
             if _end in self._vertices.keys():
                 end = self._vertices[_end]
+            else:
+                end = Vertex(_end, None)
+                self.add_vertex(end)
 
         # print(beg.id, end.id, _weight)
         if not self.directed:
@@ -190,7 +197,7 @@ class Graph:
 
     def istree(self):
         result = False
-        if self.conected and (((self.getNumberEdges() if not self.directed else self.getNumberEdges()/2) -1) == self.cardinal):
+        if self.connected and (((self.getNumberEdges() if not self.directed else self.getNumberEdges()/2) -1) == self.cardinal):
             result = True
         return result
 

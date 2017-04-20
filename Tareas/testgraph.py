@@ -1,5 +1,5 @@
-from Tareas.graph import Vertex, Graph
-import Tareas.InstanciesGenerator
+import graph
+import InstanciesGenerator
 #
 # g = Graph('Grafo 1')
 # a = Vertex('a', None)
@@ -53,5 +53,7 @@ import Tareas.InstanciesGenerator
 # print(g)
 # print( g.iscomplete)
 
-g = Tareas.InstanciesGenerator.graphInstanciesGenerator('Test', 5, 8, 1,10)
+du = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2)
+generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.tree,distribution_weight = du,distribution_degree = du, directed = True )
+g = generador.generateInstance('Test', 10, 10)
 print(g)
