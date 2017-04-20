@@ -65,30 +65,38 @@ class GraphInstancesGenerator():
                nv = graph.Vertex(i, None)
                g.add_vertex(nv)
                 
-            used = set()
             av = random.choice(g.vertices)
             available = (set(g.vertices) - {av.id})
-            while len(available) > 0:
+            while av:
                 if self.distributiondegree.type is DistributionsTypes.uniform:
-                    for i in range(self.distributiondegree.parameter1):
-                        if len(available)<1:
-                            break
-                        nv = random.choice(list(available))
-                        used.add(nv)
-                        weight = 1
-                        if self.distributionweight.type is DistributionsTypes.uniform:
-                            weight = self.distributionweight.parameter1
-                        if self.distributionweight.type is DistributionsTypes.normal:
-                            weight = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
-                        if self.distributionweight.type is DistributionsTypes.exponential:
-                            weight = round(random.expvariate(1/(self.distributionweight.parameter1)))
-                        g.add_edge(av,nv,weight)
-                        print(av.id, av.inneighbors,nv, g[nv].inneighbors)
-                        available -= {nv}
-                av = g[random.choice(list(used))]
-                used = set()
-                
-                    
+                    degree = self.distributiondegree.parameter1
+                if self.distributiondegree.type is DistributionsTypes.normal:
+                    degree = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
+                if self.distributiondegree.type is DistributionsTypes.exponential:
+                    degree = round(random.expvariate(1/(self.distributionweight.parameter1)))
+                for i in range(degree):
+                    if len(available)<1:
+                        break                        
+                    ia = [x for x in available]# if len(g[x].neighbors) == 0]
+                    print(ia)
+                    print([x for x in ia if len(g[x].neighbors) == 0 ])# if len(g[x].neighbors) == 0]]
+                    if len(ia) > 0:
+                        nv = random.choice(ia)
+                    weight = 1
+                    if self.distributionweight.type is DistributionsTypes.uniform:
+                        weight = self.distributionweight.parameter1
+                    if self.distributionweight.type is DistributionsTypes.normal:
+                        weight = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
+                    if self.distributionweight.type is DistributionsTypes.exponential:
+                        weight = round(random.expvariate(1/(self.distributionweight.parameter1)))
+                    g.add_edge(av,nv,weight)
+                    available-= {nv}
+                if len(available) > 0 :
+                    av = g[random.choice(list())]
+                else:
+                    av = None
+                    break
+                                    
                 
         return g
                

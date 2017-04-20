@@ -26,16 +26,15 @@ class Vertex:
     def __str__(self):
         result = 'Vertex: ' + str(self.id) + '\n'
         result += 'Value: ' + str(self._value) + '\n'
-        if any(self.neighbors):
-            result += 'Neighbors: ('+ str(len(self.neighbors)) + ')\n'
+        if len(self.neighbors)>0:
+            result += 'Neighbors: OutDegree('+ str(len(self.neighbors)) + ')\n'
             for n in self.neighbors:
                 result += 'Vertex: ' + str(n) + ' weight: ' + str(self.neighbors[n])
                 result += '\n'
         else:
-            result += 'No Neighbors \n'
-        
-        if any(self.neighbors):
-            result += 'In Neighbors: ('+ str(len(self.inneighbors)) + ')\n'
+            result += 'No Neighbors \n'        
+        if len(self.inneighbors)>0:
+            result += 'In Neighbors: InDegree('+ str(len(self.inneighbors)) + ')\n'
             for n in self.inneighbors:
                 result += 'Vertex: ' + str(n) + ' weight: ' + str(self.inneighbors[n])
                 result += '\n'
@@ -44,10 +43,12 @@ class Vertex:
         return result
 
     def add_neighbor(self, _neighbor, _weight=1):
-        self.neighbors[_neighbor] = _weight
+        if _neighbor not in self.neighbors.keys():
+            self.neighbors[_neighbor] = _weight
 
-    def add_inneighbor(self, _neighbor, _weight=1):
-        self.inneighbors[_neighbor] = _weight
+    def add_inneighbor(self, _inneighbor, _weight=1):
+        if _inneighbor not in self.inneighbors.keys():
+            self.inneighbors[_inneighbor] = _weight
 
 class Graph:
     def __init__(self, name, directed = False):
@@ -241,10 +242,14 @@ class Graph:
         for v in self.vertices:
                 edges+= len(self._vertices[v].neighbors)
         return edges
-
+    
     def deepfirstsearch(self, v):
-        if not v or v is None:
-            v = self[random.choice(list(self.vertices))]
+        if not v or v is None: 
+            lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
+            if len(lv)> 0:
+                v = self[lv[-1]]
+            else:
+                v = self[random.choice(list(self.vertices))]                
         g = Graph('DFS: ' + self.id)
         g.add_vertex(Vertex(v.id, v.value))
         p = [v]
@@ -265,8 +270,11 @@ class Graph:
 
     def breadthfirstsearch(self, v):
         if not v or v is None:
-            v = self[random.choice(list(self.vertices))]
-        g = Graph('BFS: ' + self.id)
+            lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
+            if len(lv)> 0:
+                v = self[lv[-1]]
+            else:
+                v = self[random.choice(list(self.vertices))]    
         g.add_vertex(Vertex(v.id, v.value))
         levels = {v.id: 0}
         sig = [v]
