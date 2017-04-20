@@ -67,8 +67,7 @@ class GraphInstancesGenerator():
                 
             used = set()
             av = random.choice(g.vertices)
-            used.add(av)
-            available = set(g.vertices) - {av}
+            available = (set(g.vertices) - {av.id})
             while len(available) > 0:
                 if self.distributiondegree.type is DistributionsTypes.uniform:
                     for i in range(self.distributiondegree.parameter1):
@@ -82,12 +81,13 @@ class GraphInstancesGenerator():
                         if self.distributionweight.type is DistributionsTypes.normal:
                             weight = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
                         if self.distributionweight.type is DistributionsTypes.exponential:
-                            weight = round(random.expvariate(1/(self.distributionweight.parameter1)))                            
+                            weight = round(random.expvariate(1/(self.distributionweight.parameter1)))
                         g.add_edge(av,nv,weight)
-                            
-                available-=used
-                while len(av.neighbors) > 0:
-                    av = g[random.choice(list(used))]
+                        print(av.id, av.inneighbors,nv, g[nv].inneighbors)
+                        available -= {nv}
+                av = g[random.choice(list(used))]
+                used = set()
+                
                     
                 
         return g

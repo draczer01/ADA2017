@@ -4,7 +4,8 @@ class Vertex:
     def __init__(self, _id, _object):
         self._id = _id
         self._value = _object
-        self._neighbors = {}
+        self._outneighbors = {}
+        self._inneighbors = {}
 
 
     @property
@@ -17,21 +18,36 @@ class Vertex:
 
     @property
     def neighbors(self):
-        return self._neighbors
+        return self._outneighbors
+    
+    @property
+    def inneighbors(self):
+        return self._inneighbors
     def __str__(self):
         result = 'Vertex: ' + str(self.id) + '\n'
         result += 'Value: ' + str(self._value) + '\n'
-        if any(self._neighbors):
-            result += 'Neighbors: \n'
-            for n in self._neighbors:
-                result += 'Vertex: ' + str(n) + ' weight: ' + str(self._neighbors[n])
+        if any(self.neighbors):
+            result += 'Neighbors: ('+ str(len(self.neighbors)) + ')\n'
+            for n in self.neighbors:
+                result += 'Vertex: ' + str(n) + ' weight: ' + str(self.neighbors[n])
                 result += '\n'
         else:
             result += 'No Neighbors \n'
+        
+        if any(self.neighbors):
+            result += 'In Neighbors: ('+ str(len(self.inneighbors)) + ')\n'
+            for n in self.inneighbors:
+                result += 'Vertex: ' + str(n) + ' weight: ' + str(self.inneighbors[n])
+                result += '\n'
+        else:
+            result += 'No in Neighbors \n'
         return result
 
     def add_neighbor(self, _neighbor, _weight=1):
-        self._neighbors[_neighbor] = _weight
+        self.neighbors[_neighbor] = _weight
+
+    def add_inneighbor(self, _neighbor, _weight=1):
+        self.inneighbors[_neighbor] = _weight
 
 class Graph:
     def __init__(self, name, directed = False):
@@ -113,8 +129,11 @@ class Graph:
     def add_edge(self, _begin, _end, _weight=1):
 #        beg, end = None, None
         if isinstance(_begin, Vertex):
-            beg = _begin
-            self.add_vertex(beg)
+            if _begin.id in self.vertices.keys():
+                beg = self.vertices[_begin.id]
+            else:
+                beg = _beg
+            self.add_vertex(beg)                
         else:
             if _begin in self._vertices.keys():
                 beg = self._vertices[_begin]
@@ -122,7 +141,10 @@ class Graph:
                 beg = Vertex(_begin, None)
                 self.add_vertex(beg)
         if isinstance(_end, Vertex):
-            end = _end
+            if _end.id in self.vertices.keys():
+                end = self.vertices[_end.id]
+            else:
+                end = _end
             self.add_vertex(end)
         else:
             if _end in self._vertices.keys():
@@ -133,8 +155,11 @@ class Graph:
 
         # print(beg.id, end.id, _weight)
         if not self.directed:
-            self._vertices[end.id].add_neighbor(beg.id, _weight)
-        self._vertices[beg.id].add_neighbor(end.id, _weight)
+            self.vertices[end.id].add_neighbor(beg.id, _weight)
+            self.vertices[beg.id].add_inneighbor(end.id, _weight)
+        self.vertices[beg.id].add_neighbor(end.id, _weight)
+        self.vertices[end.id].add_inneighbor(beg.id, _weight)
+#        print(beg.id, beg.inneighbors,end.id, end.inneighbors)
 
     def remove_vertex(self, v):
         if isinstance(v, Vertex):
