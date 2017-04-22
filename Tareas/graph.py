@@ -250,7 +250,7 @@ class Graph:
                 v = self[lv[-1]]
             else:
                 v = self[random.choice(list(self.vertices))]                
-        g = Graph('DFS: ' + self.id)
+        g = Graph('DFS: ' + self.id + ' from ' + v.id)
         g.add_vertex(Vertex(v.id, v.value))
         p = [v]
         l = set()
@@ -268,27 +268,36 @@ class Graph:
             p.pop()
         return g
 
-    def breadthfirstsearch(self, v):
+    def breadthfirstsearch(self, v, levels = None):
         if not v or v is None:
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
                 v = self[lv[-1]]
             else:
-                v = self[random.choice(list(self.vertices))]    
+                v = self[random.choice(list(self.vertices))]
+        g = Graph('BFS: ' + self.id + ' from ' + v.id)
         g.add_vertex(Vertex(v.id, v.value))
         levels = {v.id: 0}
         sig = [v]
-        print(v.id, levels[v.id])
+        #print(v.id, levels[v.id])
         while len(sig) > 0:
             mark = []
             for l in sig:
                 for n in l.neighbors:   
                     if n not in levels:
-                        print('l:',levels)
-                        print(n, levels[l.id])
+                        #print('l:',levels)
+                        #print(n, levels[l.id])
                         levels[n]= levels[l.id]+1
                         mark.append(self[n])
-                        g.add_edge(l.id, Vertex(n, self[n].value), levels[n])
+                        g.add_edge(l.id, Vertex(n, self[n].value) levels[n])
             sig = mark            
         return g
-                    
+
+    def centrality(self, av):
+        dv = dict(self.vertices)
+        for v in dv:
+            dv[v]= 0
+        lvl = {}
+        self.breadfirstsearch(av, lvl)
+        
+            
