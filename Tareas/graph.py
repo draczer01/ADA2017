@@ -223,7 +223,7 @@ class Graph:
 
     def istree(self):
         result = False
-        if self.connected and (((self.getNumberEdges() if not self.directed else self.getNumberEdges()/2) -1) == self.cardinal):
+        if self.connected and (((self.cardinal if self.directed else self.cardinal*2) -1) == self.getNumberEdges()):
             result = True
         return result
 

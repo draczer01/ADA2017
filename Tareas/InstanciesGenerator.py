@@ -63,25 +63,26 @@ class GraphInstancesGenerator():
             noedges = novertex-1
             for i in range(novertex):
                nv = graph.Vertex(i, None)
-               g.add_vertex(nv)
-                
+               g.add_vertex(nv)                
             av = random.choice(g.vertices)
-            available = (set(g.vertices) - {av.id})
-            while av:
+            availableroot = [x for x in g.vertices if x != av.id ]
+            ne = 0
+            used = {av.id}
+            #while av and len(available)>0:
+            while ne < noedges:
                 if self.distributiondegree.type is DistributionsTypes.uniform:
-                    degree = self.distributiondegree.parameter1
+                    degree = round(noedges/novertex)*self.distributiondegree.parameter1
                 if self.distributiondegree.type is DistributionsTypes.normal:
-                    degree = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
+                    degree = round(random.normalvariate(self.distributiondegree.parameter1,self.distributiondegree.parameter2))
                 if self.distributiondegree.type is DistributionsTypes.exponential:
-                    degree = round(random.expvariate(1/(self.distributionweight.parameter1)))
+                    degree = round(random.expvariate(1/(self.distributiondegree.parameter1)))
                 for i in range(degree):
-                    if len(available)<1:
+                    availableneigh = [x for x in g.vertices if x not in used and len(g[x].neighbors) == 0 and len(g[x].inneighbors) == 0 ]                    
+                    # if connected 
+                    if len(availableneigh) < 1 or ne >= noedges:
                         break                        
-                    ia = [x for x in available]# if len(g[x].neighbors) == 0]
-                    print(ia)
-                    print([x for x in ia if len(g[x].neighbors) == 0 ])# if len(g[x].neighbors) == 0]]
-                    if len(ia) > 0:
-                        nv = random.choice(ia)
+                    inv = random.choice(availableneigh)
+                    nv = g[inv]
                     weight = 1
                     if self.distributionweight.type is DistributionsTypes.uniform:
                         weight = self.distributionweight.parameter1
@@ -90,13 +91,60 @@ class GraphInstancesGenerator():
                     if self.distributionweight.type is DistributionsTypes.exponential:
                         weight = round(random.expvariate(1/(self.distributionweight.parameter1)))
                     g.add_edge(av,nv,weight)
-                    available-= {nv}
-                if len(available) > 0 :
-                    av = g[random.choice(list())]
+                    ne+=1
+                    #if connected and tree
+                #if connected
+                availableroot = [x for x in g.vertices if x not in used and len(g[x].inneighbors) > 0 ]
+                if len(availableroot) > 0 :
+                    iav = random.choice(availableroot)
+                    av = g[iav]
+                    used.add(av.id)
                 else:
                     av = None
                     break
-                                    
-                
+        if self.type is GraphTypes.connected:
+            #Generador de grafos pseudo connectados
+            for i in range(novertex):
+               nv = graph.Vertex(i, None)
+               g.add_vertex(nv)                
+            av = random.choice(g.vertices)
+            availableroot = [x for x in g.vertices if x != av.id ]
+            ne = 0
+            used = {av.id}
+            #while av and len(available)>0:
+            while ne < noedges:
+                if self.distributiondegree.type is DistributionsTypes.uniform:
+                    degree = round(noedges/novertex)*self.distributiondegree.parameter1
+                if self.distributiondegree.type is DistributionsTypes.normal:
+                    degree = round(random.normalvariate(self.distributiondegree.parameter1,self.distributiondegree.parameter2))
+                if self.distributiondegree.type is DistributionsTypes.exponential:
+                    degree = round(random.expvariate(1/(self.distributiondegree.parameter1)))
+                actneigh = []
+                for i in range(degree):
+                    availableneigh = [x for x in g.vertices if x != av.id and x not in actneigh]                    
+                    # if connected 
+                    if len(availableneigh) < 1 or ne >= noedges:
+                        break                                              
+                    inv = random.choice(availableneigh)
+                    nv = g[inv]
+                    weight = 1
+                    if self.distributionweight.type is DistributionsTypes.uniform:
+                        weight = self.distributionweight.parameter1
+                    if self.distributionweight.type is DistributionsTypes.normal:
+                        weight = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
+                    if self.distributionweight.type is DistributionsTypes.exponential:
+                        weight = round(random.expvariate(1/(self.distributionweight.parameter1)))
+                    g.add_edge(av,nv,weight)
+                    actneigh.append(inv)
+                    ne+=1
+                #if connected
+                availableroot = [x for x in g.vertices if x not in used and len(g[x].inneighbors) > 0 ]
+                if len(availableroot) > 0 :                      
+                    iav = random.choice(availableroot)
+                    av = g[iav]
+                    used.add(iav)
+                else:
+                    av = None
+                    break                
         return g
                
