@@ -1,5 +1,6 @@
 import multiprocessing
 import random
+import math
 class Vertex:
     def __init__(self, _id, _object):
         self._id = _id
@@ -249,8 +250,11 @@ class Graph:
             if len(lv)> 0:
                 v = self[lv[-1]]
             else:
-                v = self[random.choice(list(self.vertices))]                
-        g = Graph('DFS: ' + self.id + ' from ' + v.id)
+                v = self[random.choice(list(self.vertices))]
+        else:
+            if v is not Vertex:
+                v = self[v]                
+        g = Graph('DFS: ' + str(self.id) + ' from ' + str(v.id))
         g.add_vertex(Vertex(v.id, v.value))
         p = [v]
         l = set()
@@ -269,15 +273,20 @@ class Graph:
         return g
 
     def breadthfirstsearch(self, v, levels = None):
-        if not v or v is None:
+        if v is None:
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
                 v = self[lv[-1]]
             else:
                 v = self[random.choice(list(self.vertices))]
-        g = Graph('BFS: ' + self.id + ' from ' + v.id)
+        else:
+            if v is not Vertex:
+                v =self[v]
+        if levels is None:
+            levels = {}
+        g = Graph('BFS: ' + str(self.id) + ' from ' + str(v.id))
         g.add_vertex(Vertex(v.id, v.value))
-        levels = {v.id: 0}
+        levels[v.id] = 0
         sig = [v]
         #print(v.id, levels[v.id])
         while len(sig) > 0:
@@ -289,15 +298,27 @@ class Graph:
                         #print(n, levels[l.id])
                         levels[n]= levels[l.id]+1
                         mark.append(self[n])
-                        g.add_edge(l.id, Vertex(n, self[n].value) levels[n])
+                        g.add_edge(l.id, Vertex(n, self[n].value), levels[n])
             sig = mark            
         return g
 
-    def centrality(self, av):
-        dv = dict(self.vertices)
-        for v in dv:
-            dv[v]= 0
+    def closenesscentrality(self, av):        
         lvl = {}
-        self.breadfirstsearch(av, lvl)
+        bg = self.breadthfirstsearch(av, lvl)
+        #print(lvl)
+        #print(bg)
+        s = 0
+        for c in lvl:
+            if lvl[c] > 0:
+                s += 1/lvl[c]
+            else:
+                s += 0
+        m = self.cardinal
+        #print(m,s)
+        if s <= 0:
+            r = math.inf
+        else:
+            r = m/s        
+        return r
         
             
