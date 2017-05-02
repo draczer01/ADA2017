@@ -1,6 +1,13 @@
 import multiprocessing
 import random
 import math
+from heapq import heappop, heappush
+
+def flatten(L):
+    while len(L) > 0:
+        yield L[0]
+        L = L[1]
+
 class Vertex:
     def __init__(self, _id, _object):
         self._id = _id
@@ -83,13 +90,18 @@ class Graph:
         if self._connect is None:
             self._connect = self.isconnected()
         return self._connect
-
+    @property
+    def density(self):
+        n = self.cardinal
+        return self.degreesum / (n * (n - 1.0))
     @property
     def tree(self):
         if self._tree is None:
             self._tree = self.istree()
         return self._tree
-
+    @property
+    def degreesum(self):
+        return sum([len(self.vertices[v].neighbors) for v in self.vertices]) 
     @property
     def directed(self):
         return self._directed
@@ -245,7 +257,7 @@ class Graph:
         return edges
     
     def deepfirstsearch(self, v):
-        if not v or v is None: 
+        if v is None: 
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
                 v = self[lv[-1]]
@@ -253,26 +265,22 @@ class Graph:
                 v = self[random.choice(list(self.vertices))]
         else:
             if v is not Vertex:
-                v = self[v]                
-        g = Graph('DFS: ' + str(self.id) + ' from ' + str(v.id))
-        g.add_vertex(Vertex(v.id, v.value))
+                v = self[v]
+            else:
+                v= self[v.id]                
+        g = set()
         p = [v]
-        l = set()
         while len(p)>0:
-            av = p[-1]
-            l.add(av.id)
+            av = p.pop()
+            g.add(av)
             # print(av.id)
-            if len(av.neighbors) > 0:
-                cl = list(set(av.neighbors)-l)
-                if len(cl) > 0:
-                    dv = random.choice(cl)
-                    p.append(self[dv])
-                    g.add_edge(Vertex(av.id, av.value),Vertex(dv,self[dv].value), len(p)-1)
-                    continue
-            p.pop()
+            for n in av.neighbors:
+                if self[n] not in p:
+                    if self[n] not in l:
+                        p.append(n)
         return g
 
-    def breadthfirstsearch(self, v, levels = None):
+    def breadthfirstsearch(self, v):
         if v is None:
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
@@ -282,10 +290,9 @@ class Graph:
         else:
             if v is not Vertex:
                 v =self[v]
-        if levels is None:
-            levels = {}
-        g = Graph('BFS: ' + str(self.id) + ' from ' + str(v.id))
-        g.add_vertex(Vertex(v.id, v.value))
+            else:
+                v= self[v.id]
+        levels = {}
         levels[v.id] = 0
         sig = [v]
         #print(v.id, levels[v.id])
@@ -294,13 +301,10 @@ class Graph:
             for l in sig:
                 for n in l.neighbors:   
                     if n not in levels:
-                        #print('l:',levels)
-                        #print(n, levels[l.id])
                         levels[n]= levels[l.id]+1
                         mark.append(self[n])
-                        g.add_edge(l.id, Vertex(n, self[n].value), levels[n])
             sig = mark            
-        return g
+        return levels
 
     def closenesscentrality(self, av):        
         lvl = {}
@@ -320,5 +324,53 @@ class Graph:
         else:
             r = m/s        
         return r
+
         
-            
+    def shortest(self, v, w): # Dijkstra's algorithm
+        if v is Vertex:
+            v = v.id
+        if w is Vertex:
+            w = w.id
+        q = [(0, v, ())]
+        visited = set() 
+        while len(q) > 0:
+            (l, u, p) = heappop(q)
+            if u not in visited:
+                visited.add(u)
+                if u == w:
+                    return list(flatten(p))[::-1] + [u]
+            p = (u, p) 
+            for n in self[u].neighbors:
+                if n not in visited:
+                    heappush(q, (l + 1, n, p))
+        return None
+    
+    def allshortedpaths(self):
+        p = list()
+        visited = []
+        for v in self:
+            visited.append(v)
+            for u in self:
+                if u not in visited:
+                    res = self.shortest(v, u)
+                    if res is not None:
+                        p.append(res)
+        return p
+
+    def betweennesscentrality(self, v=None):
+        p = self.allshortedpaths()
+        if element is None: # all vertex betweennesses
+            b = defaultdict(int) # zero if no paths
+            for v in self:
+                b[v] = sum([v in s for s in p])
+            return b
+        elif element in self: # vertex betweenness
+            return sum([element in s for s in p])
+        elif len(element) == 2: # edge betweenness
+            (v, u) = element
+            c = 0
+            for s in p:
+                if v in s and u in s:
+                    if fabs(s.index(v) - s.index(u)) == 1:
+                        c += 1
+            return c
