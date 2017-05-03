@@ -56,7 +56,7 @@ import InstanciesGenerator
 dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2, 2)
 dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2)
 generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.tree,distribution_weight = dw,distribution_degree = dd, directed = True )
-g = generador.generateInstance('Test', 10, 9)
+g = generador.generateInstance('Test', 10000, 9999)
 print(g)
 lv = {}
 for x in g.vertices:

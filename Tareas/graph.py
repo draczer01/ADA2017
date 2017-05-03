@@ -243,7 +243,7 @@ class Graph:
     def isconnected(self):
         result = False
         bfs = self.deepfirstsearch(None)
-        if bfs.cardinal == self.cardinal:
+        if len(bfs) == self.cardinal:
             result = True
         return result
 
@@ -275,9 +275,10 @@ class Graph:
             g.add(av)
             # print(av.id)
             for n in av.neighbors:
-                if self[n] not in p:
-                    if self[n] not in l:
-                        p.append(n)
+                ne = self[n]
+                if ne not in g:
+                    if ne not in p:
+                        p.append(ne)
         return g
 
     def breadthfirstsearch(self, v):
@@ -308,13 +309,13 @@ class Graph:
 
     def closenesscentrality(self, av):        
         lvl = {}
-        bg = self.breadthfirstsearch(av, lvl)
+        bg = self.breadthfirstsearch(av)
         #print(lvl)
         #print(bg)
         s = 0
-        for c in lvl:
-            if lvl[c] > 0:
-                s += 1/lvl[c]
+        for c in bg:
+            if bg[c] > 0:
+                s += 1/bg[c]
             else:
                 s += 0
         m = self.cardinal
