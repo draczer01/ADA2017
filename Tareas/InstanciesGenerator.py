@@ -41,7 +41,10 @@ class GraphInstancesGenerator():
     def getweightvalue(self):
         weight = 1
         if self.distributionweight.type is DistributionsTypes.uniform:
-            weight = self.distributionweight.parameter1
+            if  self.distributionweight.parameter2 is not None:
+                weight = random.randint(self.distributionweight.parameter1, self.distributionweight.parameter2)
+            else:
+                weight = self.distributionweight.parameter1
         if self.distributionweight.type is DistributionsTypes.normal:
             weight = round(random.normalvariate(self.distributionweight.parameter1,self.distributionweight.parameter2))
         if self.distributionweight.type is DistributionsTypes.exponential:
@@ -51,12 +54,17 @@ class GraphInstancesGenerator():
     
     def getdegreevalue(self, noedges, novertex):
         degree = 1
-        if self.distributiondegree.type is DistributionsTypes.uniform:
-            degree = round(noedges/novertex)*self.distributiondegree.parameter1
+        if self.distributionweight.type is DistributionsTypes.uniform:
+            if  self.distributionweight.parameter2 is not None:
+                degree = random.randint(self.distributionweight.parameter1, min(self.distributionweight.parameter2, novertex))
+            else:
+                degree = min(self.distributionweight.parameter1, novertex)
         if self.distributiondegree.type is DistributionsTypes.normal:
             degree = round(random.normalvariate(self.distributiondegree.parameter1,self.distributiondegree.parameter2))
+            degree = min(degree, novertex)
         if self.distributiondegree.type is DistributionsTypes.exponential:
             degree = round(random.expvariate(1/(self.distributiondegree.parameter1)))
+            degree = min(degree, novertex)
         return degree
 
    
