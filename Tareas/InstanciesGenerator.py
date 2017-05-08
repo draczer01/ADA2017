@@ -169,7 +169,7 @@ class GraphInstancesGenerator():
         g = graph.Graph(name, self.directed)
         if self.type is GraphTypes.complete:
             #Generador de grafos completos
-            g = generateComplete(name, novertex)
+            g = self.generateComplete(name, novertex)
         if self.type is GraphTypes.tree:
             #Generador de arboles
             g = self.generateTree(name, novertex)

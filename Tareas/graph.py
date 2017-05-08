@@ -375,3 +375,27 @@ class Graph:
                     if fabs(s.index(v) - s.index(u)) == 1:
                         c += 1
             return c
+
+    def krushkal(self):
+        e = {}
+        for v in self.vetices:
+            for n in self[g].neighbors:
+                e[(v,n)] = self[g].neighbors
+        arbol = set()
+        peso = 0
+        comp = dict()
+
+        while len(e)>0:
+            arista = min(e.keys(), key = (lambda k: e[k]))
+        w = e[arista]    
+        e.pop(arista)
+        (u,v) = arista
+        c = e.get(v, {v})
+        if u not in c:
+            arbol.add(arista)
+            peso += w
+            nuevo = c.union(e.get(u,{u}))
+        for i in nuevo:
+            e[i]= nuevo
+        print('MST con peso', peso, ':', arbol)
+        
