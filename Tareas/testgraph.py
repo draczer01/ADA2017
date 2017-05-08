@@ -53,10 +53,10 @@ import InstanciesGenerator
 # print(g)
 # print( g.iscomplete)
 
-dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2, 2)
-dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2)
-generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.tree,distribution_weight = dw,distribution_degree = dd, directed = True )
-g = generador.generateInstance('Test', 10000, 9999)
+dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.normal, 4, 2)
+dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2, 2)
+generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.connected,distribution_weight = dw,distribution_degree = dd, directed = True )
+g = generador.generateInstance('Test', 10, 50)
 print(g)
 lv = {}
 for x in g.vertices:
