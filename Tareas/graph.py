@@ -232,6 +232,8 @@ class Graph:
                 workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
             for w in workers:
                 result = result and w.get()
+#        for v in self.vertices:
+#            result = result and self.vertexcomplete(v)
         return result
 
     def istree(self):
@@ -268,17 +270,23 @@ class Graph:
                 v = self[v]
             else:
                 v= self[v.id]                
-        g = set()
+       g = []
         p = [v]
         while len(p)>0:
             av = p.pop()
-            g.add(av)
+            if av.id not in g:
+                g.append(av.id)
             # print(av.id)
-            for n in av.neighbors:
-                ne = self[n]
-                if ne not in g:
-                    if ne not in p:
-                        p.append(ne)
+               # print(av.neighbors.keys())
+                if len(av.neighbors) > 0:
+                    ne = list(av.neighbors.keys())
+                    random.shuffle(ne)
+                    for n in ne:
+                        #print('v', av.id, 'n', n, 'p', p)
+                        ne = self[n]
+                        if ne.id not in g:
+                            if ne not in p:
+                                p.append(ne)
         return g
 
     def breadthfirstsearch(self, v):
@@ -378,24 +386,29 @@ class Graph:
 
     def krushkal(self):
         e = {}
-        for v in self.vetices:
-            for n in self[g].neighbors:
-                e[(v,n)] = self[g].neighbors
-        arbol = set()
+        for v in self.vertices:
+            for n in self[v].neighbors:
+                e[(v,n)] = self[v].neighbors[n]
+        arbol = Graph('kuskal')
         peso = 0
         comp = dict()
-
-        while len(e)>0:
-            arista = min(e.keys(), key = (lambda k: e[k]))
-        w = e[arista]    
-        e.pop(arista)
-        (u,v) = arista
-        c = e.get(v, {v})
-        if u not in c:
-            arbol.add(arista)
-            peso += w
-            nuevo = c.union(e.get(u,{u}))
-        for i in nuevo:
-            e[i]= nuevo
+        #print(e)
+        t = sorted(e.keys(), key = (lambda k: e[k]))        
+        #print(t)
+        nuevo = set()
+        while len(t) > 0 and len(nuevo) < len(self.vertices):
+            #print(len(t)) 
+            arista = t.pop()
+            w = e[arista]    
+            del e[arista]
+            (u,v) = arista
+            c = e.get(v, {v})
+            if u not in c:
+                arbol.add_edge(u,v,w)
+                peso += w
+                nuevo = c.union(e.get(u,{u}))
+            for i in nuevo:
+                e[i]= nuevo
         print('MST con peso', peso, ':', arbol)
+        return arbol
         

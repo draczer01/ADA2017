@@ -84,14 +84,15 @@ class GraphInstancesGenerator():
     def generateComplete(self, name, novertex):
         g = graph.Graph(name, self.directed)
         #Generador de grafos completos
-        vl = list(g.vertices)
-        for i in vl:
-            nl = vl
-            nl.remove(i)
+        #vl = list(g.vertices)
+        for i in range(novertex):
+            #nl = vl
+            #nl.remove(i)
             #self.distributiondegree = DistributionsTypes.uniform                
-            for j in nl:                        
-                weight = self.getweightvalue()
-                g.add_edge(i,j,weight)
+            for j in range(novertex):
+                if i!=j:                        
+                    weight = self.getweightvalue()
+                    g.add_edge(i,j,weight)
         return g
    
     def generateTree(self, name, novertex, degree = None):
