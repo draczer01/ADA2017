@@ -3,8 +3,8 @@ import graph
 import InstanciesGenerator
 
 dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 10, 2)
-dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.normal, 2, 5)
-generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.connected,distribution_weight = dw,distribution_degree = dd, directed = False )
+dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.normal, 6, 2)
+generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.complete,distribution_weight = dw,distribution_degree = dd, directed = False )
 g = generador.generateInstance('Test', 10, 50)
 
 #lv = {}

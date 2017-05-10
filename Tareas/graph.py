@@ -258,7 +258,7 @@ class Graph:
                 edges+= len(self._vertices[v].neighbors)
         return edges
     
-    def deepfirstsearch(self, v):
+    def deepfirstsearch(self, v=None):
         if v is None: 
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
@@ -270,7 +270,7 @@ class Graph:
                 v = self[v]
             else:
                 v= self[v.id]                
-       g = []
+        g = []
         p = [v]
         while len(p)>0:
             av = p.pop()
@@ -289,7 +289,7 @@ class Graph:
                                 p.append(ne)
         return g
 
-    def breadthfirstsearch(self, v):
+    def breadthfirstsearch(self, v=None):
         if v is None:
             lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
             if len(lv)> 0:
@@ -384,7 +384,7 @@ class Graph:
                         c += 1
             return c
 
-    def krushkal(self):
+    def kruskal(self):
         e = {}
         for v in self.vertices:
             for n in self[v].neighbors:
