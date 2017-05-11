@@ -78,6 +78,8 @@ class GraphInstancesGenerator():
             degree = min(degree, novertex)
         if self.distributiondegree.type is DistributionsTypes.geometric:
             degree = round(math.log(random.random())/math.log(self.distributiondegree.parameter1/novertex))
+        if self.distributiondegree.type is DistributionsTypes.random:
+            degree = random.randint(1, novertex)
 
         return degree
 
@@ -133,15 +135,27 @@ class GraphInstancesGenerator():
     
     def generateConnected(self,name, novertex, noedges):
         if noedges > novertex -1:
-            g = self.generateTree(name, novertex, 1)
+            g = self.generateTree(name, novertex, random.randint(1,novertex))
             ne = novertex-1
             vl = list(g.vertices)
+            dv = dict()
+            for v in g.vertices:
+                dv[v] = self.getdegreevalue(noedges, novertex)
+            sd = sum(dv.values)
+            ld = noedges - sd 
+            if ld > 0:
+                rt = ld//novertex
+                if rt >0:
+                    for v in dv:
+                        if dv[v]<novertex:
+                            dv[v]+=rt
+                
             random.shuffle(vl)           
             #rate = noedges//novertex 
             av = vl.pop()
             used = []
             while ne < noedges:
-                degree = self.getdegreevalue(noedges, novertex)
+                #degree = self.getdegreevalue(noedges, novertex)
                 #if degree/novertex > 0.5 :
                 avl = list(g.vertices)
                 avl.remove(av)

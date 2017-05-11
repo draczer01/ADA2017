@@ -1,7 +1,7 @@
-# Actividad hecha por Missael Sánchez Villegas y José Anastacio Hernández Saldaña y principalmente la Dra Elisa Schaeffer :v
+# Actividad hecha por Missael Sánchez Villegas y José Anastacio Hernández Saldaña y principalmente la Dra. Elisa Schaeffer :v
 from random import shuffle
-grafo = [(1, 3), (2, 3), (2, 4), (3, 4), (4, 6), (5, 6)]
 from copy import deepcopy
+grafo = [(1, 3), (2, 3), (2, 4), (3, 4), (4, 6), (5, 6)]
 cand = deepcopy(grafo)
 shuffle(cand) #aleatorizacion de aristas
 comp = dict() #componentes

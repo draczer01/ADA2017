@@ -397,13 +397,13 @@ class Graph:
         #for v in self.vertices:
         #    for n in self[v].neighbors:
         #        e[(v,n)] = self[v].neighbors[n]
-        print(e)
-        arbol = Graph('kuskal')
+        arbol = Graph(self.id + ' MST from kuskal')
         peso = 0
         comp = dict()
         #print(e)
         t = sorted(e.keys(), key = (lambda k: e[k]))        
         #print(t)
+        comp = dict()
         nuevo = set()
         while len(t) > 0 and len(nuevo) < len(self.vertices):
             #print(len(t)) 
@@ -411,13 +411,14 @@ class Graph:
             w = e[arista]    
             del e[arista]
             (u,v) = arista
-            c = e.get(v, {v})
+            c = comp.get(v, {v})
             if u not in c:
+                #print('u ',u, 'v ',v ,'c ', c)
                 arbol.add_edge(u,v,w)
                 peso += w
-                nuevo = c.union(e.get(u,{u}))
-            for i in nuevo:
-                e[i]= nuevo
-        print('MST con peso', peso, ':', arbol)
+                nuevo = c.union(comp.get(u,{u}))
+                for i in nuevo:
+                    comp[i]= nuevo
+        print('MST con peso', peso, ':', nuevo)
         return arbol
         
