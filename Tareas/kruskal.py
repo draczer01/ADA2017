@@ -1,4 +1,4 @@
-# Actividad hecha por Missael Sánchez Villegas y José Anastacio Hernández Saldaña
+#Actividad hecha por Missael Sánchez Villegas y José Anastacio Hernández Saldana
 import graph
 import InstanciesGenerator
 

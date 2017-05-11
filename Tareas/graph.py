@@ -214,6 +214,13 @@ class Graph:
                     result[v][n] = 0
         return result
 
+    def getedges(self):
+        result = dict()
+        for v in self.vertices:
+            for n in self.vertices[v].neighbors:
+                result[(v,n)] = self.vertices[v].neighbors[n]
+        return result
+
     def vertexcomplete(self, v):
         result = False
         for n in self._vertices:
@@ -225,6 +232,8 @@ class Graph:
 
     def iscomplete(self):
         result = True
+#        for v in self.vertices:
+#            result = result and self.vertexcomplete(v)
         with multiprocessing.Pool() as pool:
             workers = []
             results = []
@@ -232,8 +241,7 @@ class Graph:
                 workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
             for w in workers:
                 result = result and w.get()
-#        for v in self.vertices:
-#            result = result and self.vertexcomplete(v)
+                
         return result
 
     def istree(self):
@@ -385,10 +393,11 @@ class Graph:
             return c
 
     def kruskal(self):
-        e = {}
-        for v in self.vertices:
-            for n in self[v].neighbors:
-                e[(v,n)] = self[v].neighbors[n]
+        e = self.getedges()
+        #for v in self.vertices:
+        #    for n in self[v].neighbors:
+        #        e[(v,n)] = self[v].neighbors[n]
+        print(e)
         arbol = Graph('kuskal')
         peso = 0
         comp = dict()
