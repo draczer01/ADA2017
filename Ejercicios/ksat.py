@@ -1,5 +1,5 @@
 class SatProblem:
-    def __init__(self, path = None, dnf = False, problem):
+    def __init__(self, path = None, dnf = False, problem = None):
         if path not None:
             l = open(path,'r').readlines()
             p = l[0][-1]
@@ -9,7 +9,7 @@ class SatProblem:
             self._dnf = dnf
             self._problem = problem
             
-    def evaluate(assignation, value = True):
+    def evaluate(self, assignation, value = True):
         valid = 0
         result = True
         for clause in self._problem:
@@ -24,8 +24,61 @@ class SatProblem:
             valid += 1 if clause else 0
         return 1 if result else valid / len(self._problem)        
 
-    def ranking(value):
-        
+    def countapperance(self, assignation, value = True, literal):
+        result = 0        
+        for clause in self._problem:
+            for lit in clause:                
+                n = lit[0] == '!'
+                val = lit if not n else lit[1:]
+                if value:
+                    if lit in assignation:
+                        if n:
+                            continue
+                        else:       
+                            break                                                     
+                    else:
+                        if n:
+                            if lit == literal:
+                                result +=1
+                            else:
+                                break
+                        else:
+                            if lit == literal:
+                                result +=1
+                            else:
+                                continue
+                else:                        
+                    if lit in assignation:
+                        if n:
+                            break                                    
+                        else:       
+                            continue
+                                                     
+                    else:
+                        if n:
+                            if lit == literal:
+                                result +=1
+                            else:
+                               continue                      
+                        else:
+                            if lit == literal:
+                                result +=1
+                            else:
+                                break    
+                                
+        return result
+    
+    def costFunction(self, assignation,value=True, literal): 
+        return self.countapperance(assignation,value,literal)
+
+    def literalrange(self):
+        lit = set()
+        for clause in self._problem:
+            for lit in clause:
+                n = lit[0] == '!'
+                val = lit if not n else lit[1:]
+                lit.add(val)
+        return list(lit)        
         
             
 
