@@ -1,5 +1,5 @@
 import random
-def generarkSat(nv = 5, nc=5, DNF = True, k=3, car='x', path='problem.txt'):
+def generarkSat(nv = 5, nc=5, DNF = False, k=3, car='x', path='problem.txt'):
     scl = []
     rv = getrandomvariable(nv, car)
     if DNF:        
@@ -30,10 +30,12 @@ def generarkSat(nv = 5, nc=5, DNF = True, k=3, car='x', path='problem.txt'):
         tofile('cnfa.txt', cnfa)    
 def tofile(path, data):
     file = open(path,'w')
+    print('tofile: ', path)
     if type(data) is list:
         data = '\n'.join(str(x) for x in data)
     file.write(data)
     file.close()
+    print('done: ', path)
 
 def getrandomnegation():
     return '!' if random.randint(0,1) else ''

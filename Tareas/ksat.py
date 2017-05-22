@@ -1,30 +1,41 @@
 class SatProblem:
     def __init__(self, path = None, dnf = False, problem = None):
-        if path not None:
+        if path is not None:
             l = open(path,'r').readlines()
+            print(l)
             p = l[0][-1]
             self._dnf = (p == 'False' or p =='DNF' or p == 'dnf')
-            self._problem = [(x[:-1].split(' ')) for x in l[1:]]
+            self._problem = [(x.replace("\n", "").split(' ')) for x in l[1:]]
         else:
             self._dnf = dnf
             self._problem = problem
+
+    @property
+    def problem(self):
+        return self._problem
+    
+    @property
+    def dnf(self):
+        return self._dnf
             
     def evaluate(self, assignation, value = True):
         valid = 0
         result = True
-        for clause in self._problem:
-            clause =True if self._dnf else False
-            for lit in clause:
+        #print(self._dnf)
+        for clause_tuple in self._problem:
+            clause = True if self._dnf else False
+            for lit in clause_tuple:
                 n = lit[0] == '!'
                 val = lit if not n else lit[1:]
-                var_res  = (val in assignation and not n ) or (va not in assignation and n)
-                var_res = not var_res if not value else val_res
-                clause = clause and var_res if self._dnf else var_res or clause
-            result = result and  clause if self._dnf else result or clause
+                var_res = (val in assignation and not n ) or (val not in assignation and n)
+                var_res = not var_res if not value else var_res
+                clause = (clause and var_res) if self._dnf else (var_res or clause)
+                #print(clause_tuple,lit, var_res,clause)
+            result = (result or clause) if self._dnf else (result and clause)
             valid += 1 if clause else 0
-        return 1 if result else valid / len(self._problem)        
+        return 1 if result == 1 else valid / len(self._problem)        
 
-    def countapperance(self, assignation, value = True, literal):
+    def countapperance(self, assignation, literal, value = True):
         result = 0        
         for clause in self._problem:
             for lit in clause:                
@@ -68,17 +79,17 @@ class SatProblem:
                                 
         return result
     
-    def costFunction(self, assignation,value=True, literal): 
-        return self.countapperance(assignation,value,literal)
+    def costFunction(self, assignation, literal,value=True): 
+        return self.countapperance(assignation, literal, value)
 
     def literalrange(self):
-        lit = set()
+        literal = set()
         for clause in self._problem:
             for lit in clause:
                 n = lit[0] == '!'
                 val = lit if not n else lit[1:]
-                lit.add(val)
-        return list(lit)        
+                literal.add(val)
+        return list(literal)        
         
             
 
