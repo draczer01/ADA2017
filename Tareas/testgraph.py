@@ -1,5 +1,3 @@
-import graph
-import InstanciesGenerator
 #
 # g = Graph('Grafo 1')
 # a = Vertex('a', None)
@@ -52,6 +50,8 @@ import InstanciesGenerator
 #
 # print(g)
 # print( g.iscomplete)
+import graph
+import InstanciesGenerator
 
 dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 10, 2)
 dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2, 5)

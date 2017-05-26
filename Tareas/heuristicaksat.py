@@ -6,6 +6,8 @@ def heuristicgrasp(probpath, iters, alpha):
     bs = None
     be = 0
     sp = ksat.SatProblem(probpath)
+    sl = []
+    fi = 0
     print(sp.problem)
     for i in range(iters):
         so = greedyconstructive(sp, alpha)
@@ -14,8 +16,10 @@ def heuristicgrasp(probpath, iters, alpha):
         if be < ae:
             bs = ls
             be = ae
-        print(so, ae, ls,be)
-    return bs, ae
+            fi = i
+        sl.append((i,ae))
+        #print(so, ae, ls,be)
+    return bs, be, fi, sl
 
 def greedyconstructive(prob, alpha):
     assign = []
@@ -40,15 +44,16 @@ def greedyconstructive(prob, alpha):
     return assign
     
 def localsearch(prob, so):
-    literals = prob.literalrange()
+    elements = prob.literalrange()
+    random.shuffle(elements)
     vso = prob.evaluate(so)
     sk = so
     bs = so
-    for l in literals:
-        if l in sk:
-            sk.remove(l)
+    for e in elements:
+        if e in sk:
+            sk.remove(e)
         else:
-            sk.append(l)
+            sk.append(e)
         if vso < prob.evaluate(sk):
             bs = localsearch(prob, sk)
             break

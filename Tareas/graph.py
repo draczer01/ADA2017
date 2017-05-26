@@ -14,7 +14,9 @@ class Vertex:
         self._value = _object
         self._outneighbors = {}
         self._inneighbors = {}
-
+        self._label = dict()
+        self._label['id'] = _id
+        self._label['value'] = _object
 
     @property
     def id(self):
@@ -31,6 +33,11 @@ class Vertex:
     @property
     def inneighbors(self):
         return self._inneighbors
+    
+    @property
+    def label(self):
+        return self._label
+    
     def __str__(self):
         result = 'Vertex: ' + str(self.id) + '\n'
         result += 'Value: ' + str(self._value) + '\n'

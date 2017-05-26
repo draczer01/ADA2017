@@ -33,7 +33,7 @@ class SatProblem:
                 #print(clause_tuple,lit, var_res,clause)
             result = (result or clause) if self._dnf else (result and clause)
             valid += 1 if clause else 0
-        return 1 if result == 1 else valid / len(self._problem)        
+        return 1 if result == 1 else (valid / len(self._problem))
 
     def countapperance(self, assignation, literal, value = True):
         result = 0        
