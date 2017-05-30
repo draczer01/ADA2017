@@ -1,5 +1,5 @@
-import generadorksat
-import ksat
+from files import generadorksat
+from files import ksat
 import random
 
 def heuristicgrasp(probpath, iters, alpha):

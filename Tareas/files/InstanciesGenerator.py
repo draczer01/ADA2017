@@ -1,4 +1,4 @@
-import graph
+from files import graph
 import random
 import math
 from enum import Enum
