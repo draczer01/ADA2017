@@ -18,11 +18,11 @@ for r in range(10):
 	dfs =  k.deepfirstsearch()
 	c = 0
 	for f in range(len(dfs) -1):
-		c += g[dfs[f]].neighbors[dfs[f+1]]
-		print(dfs[f], dfs[f+1], g[dfs[f]].neighbors[dfs[f+1]] )
+		c += g[dfs[f]].neighbors[dfs[f+1]]['weight']
+		print(dfs[f], dfs[f+1], g[dfs[f]].neighbors[dfs[f+1]]['weight'] )
 
-	c += g[dfs[-1]].neighbors[dfs[0]]
-	print(dfs[-1], dfs[0], g[dfs[-1]].neighbors[dfs[0]])
+	c += g[dfs[-1]].neighbors[dfs[0]]['weight']
+	print(dfs[-1], dfs[0], g[dfs[-1]].neighbors[dfs[0]]['weight'])
 	print('costo',c)
 
 

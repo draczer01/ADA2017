@@ -1,6 +1,6 @@
 # generador de instancias de grafos
-import files.graph
-import files.InstanciesGenerator
+from files import graph
+from files import InstanciesGenerator
 
 dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 10, 2)
 dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 2, 5)
