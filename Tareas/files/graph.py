@@ -259,35 +259,35 @@ class Graph:
         return result
 
 
-        def deepfirstsearch(self, v=None):
-            if v is None: 
-                lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
-                if len(lv)> 0:
-                    v = self[lv[-1]]
-                else:
-                    v = self[random.choice(list(self.vertices))]
+    def deepfirstsearch(self, v=None):
+        if v is None: 
+            lv = [x for x in self.vertices if len(self[x].inneighbors) == 0 and len(self[x].neighbors) > 0]
+            if len(lv)> 0:
+                v = self[lv[-1]]
             else:
-                if v is not Vertex:
-                    v = self[v]
-                else:
-                    v= self[v.id]                
-            g = []
-            p = [v]
-            while len(p)>0:
-                av = p.pop()
-                if av.id not in g:
-                    g.append(av.id)
-                    # print(av.id)
-                    # print(av.neighbors.keys())
-                    if len(av.neighbors) > 0:
-                        ne = list(av.neighbors.keys())
-                        random.shuffle(ne)
-                        for n in ne:
-                            #print('v', av.id, 'n', n, 'p', p)
-                            ne = self[n]
-                            if ne.id not in g:
-                                if ne not in p:
-                                    p.append(ne)
+                v = self[random.choice(list(self.vertices))]
+        else:
+            if v is not Vertex:
+                v = self[v]
+            else:
+                v= self[v.id]                
+        g = []
+        p = [v]
+        while len(p)>0:
+            av = p.pop()
+            if av.id not in g:
+                g.append(av.id)
+                # print(av.id)
+                # print(av.neighbors.keys())
+                if len(av.neighbors) > 0:
+                    ne = list(av.neighbors.keys())
+                    random.shuffle(ne)
+                    for n in ne:
+                        #print('v', av.id, 'n', n, 'p', p)
+                        ne = self[n]
+                        if ne.id not in g:
+                            if ne not in p:
+                                p.append(ne)
         return g
 
     def breadthfirstsearch(self, v=None):
