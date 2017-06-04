@@ -1,34 +1,6 @@
 # Ramificacion y busquedas para optmizacion
 # encontrar la mediana en un arreglo no ordenado, prune and search
-
-def pruneandsearch(lst, indx, left=0, right=0):
-    if right <= left:
-        right = (len(lst)//2)+1
-    print(indx, left, right)
-    mark = left
-    for x in range(left+1, right):
-        if lst [x]>lst[left]:
-            mark += 1
-            print('i', x, mark)
-            swaplst(lst, x, mark)
-
-    print('l', left,mark)
-    swaplst(lst, left, mark)
-    
-    if mark == indx:
-        print('aaa',mark, indx, lst[mark])
-        return lst[mark]
-    elif  mark > indx:
-        pruneandsearch(lst, indx, left, mark)
-    else:
-        pruneandsearch(lst, indx, mark+1, right)
-
-def swaplst(lst, left, right):
-    tmp = lst[right]
-    lst[right] = lst[left]
-    lst[left] = tmp
-
-        
+     
 def ps(arr, indx):
     #global costo
     if len(arr) ==1 :#and indx ==1:
