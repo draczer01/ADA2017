@@ -2,7 +2,7 @@ import multiprocessing
 import random
 import math
 from heapq import heappop, heappush
-
+from collections import defaultdict
 def flatten(L):
     while len(L) > 0:
         yield L[0]
@@ -146,15 +146,23 @@ class Graph:
         return res
 
     def __str__(self):
+        return self.to_string(sv=True, sa=True)
+    
+    def to_string(self, sv=False, sa=True):
         result = 'Graph: ' + str(self.id) + '\n'
         result += 'Number of vertices: ' + str(self.cardinal) + '\n'
         result += 'Number of edges: ' + str(self.getNumberEdges()) + '\n'
+        result += 'Densidad: ' + str(self.density) + '\n'
+        if sa:
+            self.connected
+            self.complete
+            self.tree
         for a in self._attr:
-            result += a +': ' + self._attr[a] + '\n'        
-        for v in (self._vertices):
-            result += str(self._vertices[v]) + '\n'
+            result += a +': ' + str(self._attr[a]) + '\n'
+        if sv:
+            for v in (self._vertices):
+                result += str(self._vertices[v]) + '\n'
         return result
-
     def add_vertex(self, _vertex_obj):
         if isinstance(_vertex_obj, Vertex):
             if _vertex_obj.id not in self._vertices.keys():
@@ -216,14 +224,16 @@ class Graph:
                 result[(v,n)] = self.vertices[v].neighbors[n]
         return result
 
-    def __vertexcomplete(self, v):
+    def vertexcomplete(self, v):
         result = False
-        if len(self._vertices[v].neighbors)  == self.cardinal - 1:
+        if not( len(self._vertices[v].neighbors)  == self.cardinal - 1 and v not in self._vertices[v].neighbors):
             for n in self._vertices:
                 if v != n and n not in self._vertices[v].neighbors:
                     break
                 else:
                     result = True
+        else:
+            result=True
         return result
 
     def getNumberEdges(self):
@@ -240,7 +250,7 @@ class Graph:
             workers = []
             results = []
             for v in self._vertices:
-                workers.append(pool.apply_async(func=Graph.__vertexcomplete, args=(self, v,)))
+                workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
             for w in workers:
                 result = result and w.get()                
         return result
@@ -316,23 +326,30 @@ class Graph:
             sig = mark            
         return levels
 
-    def closenesscentrality(self, av):        
-        lvl = {}
-        bg = self.breadthfirstsearch(av)
-        #print(lvl)
-        #print(bg)
-        s = 0
-        for c in bg:
-            if bg[c] > 0:
-                s += 1/bg[c]
+    def closenesscentrality(self, av=None):
+        if type(av) is Vertex:
+            av = av.id
+        elif av is None:
+            r = defaultdict(int)
+            for v in self.vertices:
+                r[v]=self.closenesscentrality(v)
+        if av in self.vertices:
+            lvl = {}
+            bg = self.breadthfirstsearch(av)
+            #print(lvl)
+            #print(bg)
+            s = 0
+            for c in bg:
+                if bg[c] > 0:
+                    s += 1/bg[c]
+                else:
+                    s += 0
+            m = self.cardinal
+            #print(m,s)
+            if s <= 0:
+                r = math.inf
             else:
-                s += 0
-        m = self.cardinal
-        #print(m,s)
-        if s <= 0:
-            r = math.inf
-        else:
-            r = m/s        
+                r = m/s        
         return r
 
                
@@ -349,31 +366,32 @@ class Graph:
                 visited.add(u)
                 if u == w:
                     return list(flatten(p))[::-1] + [u]
-            p = (u, p) 
+            p = (u, p)
             for n in self[u].neighbors:
                 if n not in visited:
                     el = self.vertices[u].neighbors[n][key] if key in self.vertices[u].neighbors[n].keys() else 1
                     heappush(q, (l + el, n, p))
         return None
     
-    def allshortedpaths(self):
+    def allshortedpaths(self, key= 'weight'):
         p = list()
         visited = []
         for v in self:
-            visited.append(v)
+            if not self.directed:
+                visited.append(v.id)
             for u in self:
-                if u not in visited:
-                    res = self.shortest(v, u)
+                if u.id not in visited:
+                    res = self.shortest(v.id, u.id, key)
                     if res is not None:
                         p.append(res)
         return p
 
-    def betweennesscentrality(self, element=None):
+    def betweennesscentrality(self, element=None, key='edge'):
         p = self.allshortedpaths()
         if element is None: # all vertex betweennesses
             b = defaultdict(int) # zero if no paths
             for v in self:
-                b[v] = sum([v in s for s in p])
+                b[v.id] = sum([v.id in s for s in p])
             return b
         elif element in self: # vertex betweenness
             return sum([element in s for s in p])
@@ -391,11 +409,11 @@ class Graph:
         #for v in self.vertices:
         #    for n in self[v].neighbors:
         #        e[(v,n)] = self[v].neighbors[n]
-        arbol = Graph(self.id + ' MST from kuskal')
+        arbol = Graph(self.id + ' MST from kuskal', directed=True)
         peso = 0
         comp = dict()
         #print(e)
-        t = sorted(e.keys(), key = (lambda k: e[k]))        
+        t = sorted(e.keys(), key = lambda k: e[k][key], reverse=True)        
         #print(t)
         nuevo = set()
         while len(t) > 0 and len(nuevo) < len(self.vertices):

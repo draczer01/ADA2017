@@ -2,7 +2,7 @@ class SatProblem:
     def __init__(self, path = None, dnf = False, problem = None):
         if path is not None:
             l = open(path,'r').readlines()
-            print(l)
+#            print(l)
             p = l[0][-1]
             self._dnf = (p == 'False' or p =='DNF' or p == 'dnf')
             self._problem = [(x.replace("\n", "").split(' ')) for x in l[1:]]
@@ -147,7 +147,7 @@ def tsat(dirprob, dirass):
                     va = var
                 rv = (va in ass and not neg) or (va not in ass and neg)
                 rc = rc or rv
-                print('rc: ', rc, ' rv: ', rv)
+ #               print('rc: ', rc, ' rv: ', rv)
             r = r and rc
             if not rc:
                 break

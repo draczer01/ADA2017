@@ -8,7 +8,7 @@ def heuristicgrasp(probpath, iters, alpha):
     sp = ksat.SatProblem(probpath)
     sl = []
     fi = 0
-    print(sp.problem)
+    #print(sp.problem)
     for i in range(iters):
         so = greedyconstructive(sp, alpha)
         ls = localsearch(sp,so)
@@ -19,6 +19,7 @@ def heuristicgrasp(probpath, iters, alpha):
             fi = i
         sl.append((i,ae))
         #print(so, ae, ls,be)
+        # bs, be, fi, sl
     return bs, be, fi, sl
 
 def greedyconstructive(prob, alpha):

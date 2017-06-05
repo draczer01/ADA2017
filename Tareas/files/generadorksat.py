@@ -1,5 +1,5 @@
 import random
-def generarkSat(nv = 5, nc=5, DNF = False, k=3, car='x', path='problem.txt'):
+def generarkSat(nv = 5, nc=5, DNF = False, k=3, car='x', path=''):
     scl = []
     rv = getrandomvariable(nv, car)
     if DNF:        
@@ -11,10 +11,10 @@ def generarkSat(nv = 5, nc=5, DNF = False, k=3, car='x', path='problem.txt'):
         dnfpr.insert(0, 'DNF')
         dnfa = listassignment(nv, car, rv)
         #pasar a archivo
-        tofile('dnft.txt', dnfpt)
-        tofile('dnff.txt', dnfpf)
-        tofile('dnfr.txt', dnfpr)
-        tofile('dnfa.txt', dnfa)        
+        tofile(path + 'dnft.txt', dnfpt)
+        tofile(path + 'dnff.txt', dnfpf)
+        tofile(path + 'dnfr.txt', dnfpr)
+        tofile(path + 'dnfa.txt', dnfa)        
     else:#CNF
         cnfpt = listofonevariableallclauses(nv, nc, k, car, rv)
         cnfpt.insert(0, 'CNF')
@@ -24,10 +24,10 @@ def generarkSat(nv = 5, nc=5, DNF = False, k=3, car='x', path='problem.txt'):
         cnfpr.insert(0, 'CNF')
         cnfa = listassignment(nv,car,rv)
         #pasar a archivo
-        tofile('cnft.txt', cnfpt)
-        tofile('cnff.txt', cnfpf)
-        tofile('cnfr.txt', cnfpr)
-        tofile('cnfa.txt', cnfa)    
+        tofile(path + 'cnft.txt', cnfpt)
+        tofile(path + 'cnff.txt', cnfpf)
+        tofile(path + 'cnfr.txt', cnfpr)
+        tofile(path + 'cnfa.txt', cnfa)    
 def tofile(path, data):
     file = open(path,'w')
     print('tofile: ', path)

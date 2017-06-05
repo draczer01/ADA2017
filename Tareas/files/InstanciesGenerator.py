@@ -87,10 +87,7 @@ class GraphInstancesGenerator():
         g = graph.Graph(name, self.directed)
         #Generador de grafos completos
         #vl = list(g.vertices)
-        for i in range(novertex):
-            #nl = vl
-            #nl.remove(i)
-            #self.distributiondegree = DistributionsTypes.uniform                
+        for i in range(novertex):              
             for j in range(novertex):
                 if i!=j:                        
                     w = self.getweightvalue()
@@ -135,7 +132,7 @@ class GraphInstancesGenerator():
     
     def generateConnected(self,name, novertex, noedges):
         if noedges > novertex -1:
-            g = self.generateTree(name, novertex, random.randint(1,novertex))
+            g = self.generateTree(name, novertex, random.randint(1,novertex)-1)
             ne = novertex-1
             vl = list(g.vertices)
             dv = dict()
