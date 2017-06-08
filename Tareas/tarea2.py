@@ -50,6 +50,7 @@ from files import generadorksat
 v = 100
 #Cumero de clausulas
 c = 250
-#Es DNF
+#Es DNF? 
 dnf = False
+# se cren los 4 archivos en la carpeta de files, el que termina en t con una instancia que tiene se puede sartisfacer, uno que terminsa en f con la instancia que no se puede satisfacer, uno r que es completamente aleatoria y el archivo de asignacion de valors para las 4 instancias.
 generadorksat.generarkSat(v, c, dnf, path='files/')
