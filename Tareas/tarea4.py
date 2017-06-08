@@ -1,5 +1,6 @@
 # BFS y DFS
 from files import graph
+from files import bucketfill
 from files import InstanciesGenerator
 import random
 # aplicacion de BFS con un closeness centrality
@@ -14,4 +15,5 @@ av = random.choice(lv)
 
 cc = g.closenesscentrality(av)
 print([(x, g.closenesscentrality(x)) for x in g.vertices])
- #aplicacion de DFS con un fill bucket Pendiente
+#aplicacion de DFS con un bucket fill
+bucketfill.fill()
