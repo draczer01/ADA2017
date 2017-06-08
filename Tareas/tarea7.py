@@ -1,5 +1,7 @@
 #Aleatorizacion
-# vertex cover
+# se trabajo el problea de vertex cover
+#archivos necesarios dentro de la carpeta files
+# graph.py, InstanciesGenerator.py
 from files import graph
 from files import InstanciesGenerator
 from heapq import heappop, heappush
