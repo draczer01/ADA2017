@@ -1,3 +1,6 @@
+#archivos necesarios dentro de la carpeta files
+# graph.py
+
 # clase grafo
 from files import graph
 #Crear grafo
