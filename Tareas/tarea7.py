@@ -4,7 +4,7 @@ from files import graph
 from files import InstanciesGenerator
 from heapq import heappop, heappush
 import random
-
+# se crea un grafo conecntado con nu valor de nuemero de vertices y el numero de veces que se ejecutara la aproximacion
 no_cycles = 10
 no_vertices = 15
 
@@ -22,7 +22,7 @@ for i in range(no_cycles):
     covered = set()
     
     edg = list(g.getedges().keys())
-
+# se seleccionan 1 arista al azar del conjunto de aristas, se agregan los vertices al cubrimiento y se eliminan las aristas incidentes a los vertices, se repete hasta tener un cubrimiento de todas las aristas
     while len(edg) > 0:
 #        print(len(edg))
         se = random.choice(edg)
@@ -33,5 +33,5 @@ for i in range(no_cycles):
             if se[0] in e or se[1] in e:
                 #print(se, e, se[0] in e, se[1] in e, len(edg))
                 edg.remove(e)
-    
+    #se imprime el cubrimiento
     print('res ', i, ' ', scover, len(scover))
