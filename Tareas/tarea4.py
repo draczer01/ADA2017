@@ -1,4 +1,6 @@
 # BFS y DFS
+#archivos necesarios dentro de la carpeta files
+# graph.py, bucketfill.py, InstanciesGenerator.py
 from files import graph
 from files import bucketfill
 from files import InstanciesGenerator
