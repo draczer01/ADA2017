@@ -181,7 +181,7 @@ class GraphInstancesGenerator():
                 if len(vl)>0:
                     av = vl.pop()
                 else:
-                    if mx <4: 
+                    if mx <8: 
                         vl = list(g.vertices)
                         av = vl.pop()
                         mx +=1

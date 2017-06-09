@@ -3,6 +3,7 @@ import random
 import math
 from heapq import heappop, heappush
 from collections import defaultdict
+
 def flatten(L):
     while len(L) > 0:
         yield L[0]
@@ -127,7 +128,11 @@ class Graph:
     @property
     def density(self):
         n = self.cardinal
-        return self.degreesum / (n * (n - 1.0))
+        if self.directed:
+            result = self.degreesum / (n * (n - 1.0))
+        else:
+            result = self.degreesum / (2*(n * (n - 1.0)))
+        return result
     
     @property
     def degreesum(self):
@@ -148,7 +153,7 @@ class Graph:
     def __str__(self):
         return self.to_string(sv=True, sa=True)
     
-    def to_string(self, sv=False, sa=True):
+    def to_string(self, sv=False, sa=True, key='weight'):
         result = 'Graph: ' + str(self.id) + '\n'
         result += 'Number of vertices: ' + str(self.cardinal) + '\n'
         result += 'Number of edges: ' + str(self.getNumberEdges()) + '\n'
@@ -162,6 +167,8 @@ class Graph:
         if sv:
             for v in (self._vertices):
                 result += str(self._vertices[v]) + '\n'
+                result += 'bc: ' + str(self.betweennesscentrality(v, key)) +'\n'
+                result += 'cc: ' + str(self.closenesscentrality(v)) +'\n'
         return result
     def add_vertex(self, _vertex_obj):
         if isinstance(_vertex_obj, Vertex):
@@ -244,15 +251,16 @@ class Graph:
     
     def iscomplete(self):
         result = True
-#        for v in self.vertices:
-#            result = result and self.vertexcomplete(v)
         with multiprocessing.Pool() as pool:
             workers = []
             results = []
             for v in self._vertices:
                 workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
             for w in workers:
-                result = result and w.get()                
+                result = result and w.get()
+        
+#        for v in self.vertices:
+#            result = result and self.vertexcomplete(v)
         return result
 
     def istree(self):
@@ -386,7 +394,9 @@ class Graph:
                         p.append(res)
         return p
 
+    #Esta funcion es basada en la mostrada en la ponencia de chile de la Dra Elisa Schaeffer
     def betweennesscentrality(self, element=None, key='edge'):
+        print(element, key)
         p = self.allshortedpaths()
         if element is None: # all vertex betweennesses
             b = defaultdict(int) # zero if no paths
@@ -400,7 +410,7 @@ class Graph:
             c = 0
             for s in p:
                 if v in s and u in s:
-                    if fabs(s.index(v) - s.index(u)) == 1:
+                    if abs(s.index(v) - s.index(u)) == 1:
                         c += 1
             return c
 
