@@ -65,9 +65,17 @@ class GraphInstancesGenerator():
     
     def getdegreevalue(self, noedges, novertex):
         degree = 1
+        if self.directed:
+            ratio = noedges/(novertex*(novertex-1))
+        else:
+            ratio = noedges/(2*novertex*(novertex-1))
+            mv =1
+        if ratio > 0.5:
+            mv = round(novertex*ratio)
         if self.distributionweight.type is DistributionsTypes.uniform:
             if  self.distributionweight.parameter2 is not None:
-                degree = random.randint(max(self.distributionweight.parameter1,1), min(self.distributionweight.parameter2, novertex))
+                #print('p',self.distributionweight.parameter1, mv, self.distributionweight.parameter2, novertex)
+                degree = random.randint(max(self.distributiondegree.parameter1, mv), min(self.distributiondegree.parameter2, novertex))
             else:
                 degree = min(self.distributionweight.parameter1, novertex)
         if self.distributiondegree.type is DistributionsTypes.normal:
@@ -88,7 +96,7 @@ class GraphInstancesGenerator():
         #Generador de grafos completos
         #vl = list(g.vertices)
         for i in range(novertex):              
-            for j in range(novertex):
+            for j in range(i,novertex):
                 if i!=j:                        
                     w = self.getweightvalue()
                     g.add_edge(i,j,weight=w)
@@ -131,63 +139,49 @@ class GraphInstancesGenerator():
 
     
     def generateConnected(self,name, novertex, noedges):
-        if noedges > novertex -1:
-            g = self.generateTree(name, novertex, random.randint(1,novertex)-1)
-            ne = novertex-1
-            vl = list(g.vertices)
-            dv = dict()
-            for v in g.vertices:
-                dv[v] = self.getdegreevalue(noedges, novertex)
-            sd = sum(dv.values())
-            ld = noedges - sd 
-            if ld > 0:
-                rt = ld//novertex
-                if rt >0:
-                    for v in dv:
-                        if dv[v]<novertex:
-                            dv[v]+=rt
-                    for x in range(ld%novertex):
-                        rv = random.choice(list(dv.keys()))
-                        aux = dv[rv]
-                        dv[rv]=aux+1
-                
-            random.shuffle(vl)           
-            #rate = noedges//novertex 
-            av = vl.pop()
-            used = []
+        if 0 > noedges and noedges < 1:
+            noedges = round(noedges*novertex*(novertex-1))
+        elif noedges < novertex -1:
+            return self.generateTree(name, novertex, random.randint(1,novertex)-1)
+        elif noedges > novertex*(novertex-1):
+            return self.generateComplete(name, novertex)
+        
+        g = self.generateTree(name, novertex, random.randint(1,novertex)-1)
+        ne = g.cardinal-1
+        vl = list(g.vertices)
+        random.shuffle(vl)
+        av = vl.pop()
+        while ne < noedges:
             #print(ne, noedges)
-            mx = 1
-            while ne < noedges:
-                #degree = self.getdegreevalue(noedges, novertex)
-                #if degree/novertex > 0.5 :
-                avl = list(g.vertices)
-                avl.remove(av)
-                for n in g[av].neighbors:
-                    avl.remove(n)
-                if len(avl) > dv[av]:
-                    dd = dv[av]
+            avl = list(g.vertices)
+            avl.remove(av)
+            for n in g[av].neighbors:
+                avl.remove(n)
+            degree =  self.getdegreevalue(noedges, novertex) - len(g[av].neighbors)
+            #print('n,d',ne, noedges ,len(g[av].neighbors),degree)
+            if degree < 0:
+                rest = g.cardinal - len(g[av].neighbors)
+                if rest >0:
+                    degree = random.choice(range(rest, g.cardinal))
                 else:
-                    dd = 0
-                random.shuffle(avl)
-                #print(av, len(avl), dv[av], dd)
-                for i in range(dd-1):
-                    #print('i',i, degree)
-                    nv = avl.pop()                        
-                    w = self.getweightvalue()
-                    #print(av,nv)
-                    #print(ne, noedges, '|', len(avl), degree, '|', av,nv)
-                    g.add_edge(av,nv,weight=w)                    
-                    ne+=1
-                if len(vl)>0:
-                    av = vl.pop()
-                else:
-                    if mx <8: 
-                        vl = list(g.vertices)
-                        av = vl.pop()
-                        mx +=1
-                    else:
-                        break
-            return g
+                    degree = 0
+            if len(avl) < degree:
+                degree = len(avl)
+            for i in range(degree):
+                nv = avl.pop()
+                w = self.getweightvalue()
+                g.add_edge(av,nv,weight=w)
+                ne+=2
+                if ne >= noedges:
+                    break
+            if len(vl)>0:
+                av = vl.pop()
+            else:
+                print('r')
+                vl = list(g.vertices)
+                av = vl.pop()                
+            
+        return g
              
     def generateInstance(self, name, novertex, noedges):
         g = graph.Graph(name, self.directed)

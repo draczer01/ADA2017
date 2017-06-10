@@ -129,9 +129,9 @@ class Graph:
     def density(self):
         n = self.cardinal
         if self.directed:
-            result = self.degreesum / (n * (n - 1.0))
+            result = self.getNumberEdges() / (2* n * (n - 1.0))
         else:
-            result = self.degreesum / (2*(n * (n - 1.0)))
+            result = self.getNumberEdges() / ( n * (n - 1.0))
         return result
     
     @property
@@ -396,14 +396,14 @@ class Graph:
 
     #Esta funcion es basada en la mostrada en la ponencia de chile de la Dra Elisa Schaeffer
     def betweennesscentrality(self, element=None, key='edge'):
-        print(element, key)
+        #print(element, key)
         p = self.allshortedpaths()
         if element is None: # all vertex betweennesses
             b = defaultdict(int) # zero if no paths
             for v in self:
                 b[v.id] = sum([v.id in s for s in p])
             return b
-        elif element in self: # vertex betweenness
+        elif element in self.vertices: # vertex betweenness
             return sum([element in s for s in p])
         elif len(element) == 2: # edge betweenness
             (v, u) = element
