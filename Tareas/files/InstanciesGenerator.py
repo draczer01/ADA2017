@@ -177,7 +177,7 @@ class GraphInstancesGenerator():
             if len(vl)>0:
                 av = vl.pop()
             else:
-                print('r')
+#                print('r')
                 vl = list(g.vertices)
                 av = vl.pop()                
             
