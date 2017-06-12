@@ -6,7 +6,7 @@ import random
 import time
 
 
-def exe(g):
+def exe(g,de=0):
     g#0 = generadortree.generateInstance(name + ' tree', n, m1)
     g.connected
     g.complete
@@ -22,7 +22,7 @@ def exe(g):
     bfst =g.breadthfirstsearch()
     tt1 = time.clock()
     tb = (tt1-tt0)*1000.0
-    print( str(d) , str(tc), str(tb) )
+    print( str(de) , str(tc), str(tb) )
     del g
     return d
 
@@ -32,7 +32,7 @@ name = 'test'
 direct = False
 #Numero de vertices
 n= 50
-cycle = 100
+cycle = 10
 dl, du = 1 , n
 wl, wu = 1, 10
 
@@ -49,14 +49,14 @@ generadortree = InstanciesGenerator.GraphInstancesGenerator(graphtype = Instanci
 
 for i in range(cycle):
     g0 = generadortree.generateInstance(name + ' tree', n, n-1)
-    exe(g0)
+    exe(g0, (g0.density)*100.0)
     d = 5
     while d < 100:
         g1 = generadorconnected.generateInstance(name + ' connected', n, (n*(n-1)*d/100))
                 
-        exe(g1)
+        exe(g1,d)
         d += 5
     
     gc = generadorcomplete.generateInstance(name + ' complete', n, n)
-    exe(gc)
+    exe(gc,(gc.density)*100.0)
   
