@@ -32,7 +32,7 @@ name = 'test'
 direct = False
 #Numero de vertices
 n= 50
-cycle = 10
+cycle = 100
 dl, du = 1 , n
 wl, wu = 1, 10
 
