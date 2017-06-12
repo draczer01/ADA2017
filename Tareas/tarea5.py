@@ -20,6 +20,6 @@ while len(g.vertices)>2 and b.id == a.id:
     b = random.choice(g.vertices)
 # se calcua el flujo maximo entre los 2
 mf = g.maxflow(a.id,b.id)
-print(g)
+print(g.to_string(sv=False))
 print('Max flow: ', a.id, b.id, mf )
 
