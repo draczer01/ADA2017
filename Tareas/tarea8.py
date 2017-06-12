@@ -60,4 +60,4 @@ for i in range(cycle):
     gc = generadorcomplete.generateInstance(name + ' complete', n, n)
     exe(gc,(gc.density)*100.0)
 
-# se generaron varios resultados para los valores de 50 aristas, mientras que para tamaños mayores se perdia la transicion de fase.
+# se generaron varios resultados para los valores de 50 aristas, mientras que para tamaños mayores se perdia la transicion de fase. se dejaton los resultados en al carpeta de resultados.
