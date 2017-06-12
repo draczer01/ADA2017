@@ -335,29 +335,45 @@ class Graph:
         return levels
 
     def closenesscentrality(self, av=None):
+        all = False
+        m = self.cardinal
         if type(av) is Vertex:
             av = av.id
         elif av is None:
-            r = defaultdict(int)
-            for v in self.vertices:
-                r[v]=self.closenesscentrality(v)
+            all = True
+            result = defaultdict(int)
         if av in self.vertices:
-            lvl = {}
-            bg = self.breadthfirstsearch(av)
+            lvl = {}            
+            bg = defaultdict(int)
+            for v in self.vertices:
+                bg[v] = self.breadthfirstsearch(v)
             #print(lvl)
             #print(bg)
             s = 0
-            for c in bg:
-                if bg[c] > 0:
-                    s += 1/bg[c]
-                else:
-                    s += 0
             m = self.cardinal
+            for v in bg:
+                if all:
+                    for c in bg[v]:
+                        if c != n:
+                            aux = bg[v][c]
+                            if aux < 1:
+                                aux = m
+                            result[c] += aux
+                elif av in bg[v].keys():
+                    s += bg[v][av]
+                else:
+                    s += m
             #print(m,s)
-            if s <= 0:
+            if all:
+                for w in result:
+                        result[w] = (m-1)/result[w]
+                return result
+            elif s <= 0:
                 r = math.inf
             else:
-                r = m/s        
+                r = (m-1)/s
+        else:
+            r = None
         return r
 
                

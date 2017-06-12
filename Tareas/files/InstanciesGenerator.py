@@ -69,7 +69,7 @@ class GraphInstancesGenerator():
             ratio = noedges/(novertex*(novertex-1))
         else:
             ratio = noedges/(2*novertex*(novertex-1))
-            mv =1
+        mv =ratio
         if ratio > 0.5:
             mv = round(novertex*ratio)
         if self.distributionweight.type is DistributionsTypes.uniform:

@@ -1,3 +1,3 @@
 datos = read.csv("resultTarea8.txt", sep=" ", header=FALSE)
-plot(datos$V1, datos$V2, type="l")
-lines(datos$V1, datos$V3, col='red')
+a = aggregate(datos, by=list(datos$V1), mean)
+plot(a$Group.1, a$V2, type="l")

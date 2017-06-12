@@ -23,10 +23,6 @@ def exe(g):
     tt1 = time.clock()
     tb = (tt1-tt0)*1000.0
     print( str(d) , str(tc), str(tb) )
-    #tt0 = time.clock()
-    #dfst =g0.deepfirstsearch()
-    #tt1 = time.clock()
-    #print('timedfs: ', str(tt1-tt0) +'\n')
     del g
     return d
 
@@ -35,8 +31,8 @@ def exe(g):
 name = 'test'
 direct = False
 #Numero de vertices
-n= 100
-
+n= 50
+cycle = 100
 dl, du = 1 , n
 wl, wu = 1, 10
 
@@ -51,12 +47,16 @@ generadorconnected = InstanciesGenerator.GraphInstancesGenerator(graphtype = Ins
 
 generadortree = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.tree,distribution_weight = dw,distribution_degree = dd, directed = direct )
 
-
-g0 = generadortree.generateInstance(name + ' tree', n, n-1)
-d = exe(g0)
-while d < 100:
-    d += 5
-    g1 = generadorconnected.generateInstance(name + ' connected', n, (n*(n-1)*d/100))
-    exe(g1)
-gc = generadorcomplete.generateInstance(name + ' complete', n, n)
+for i in range(cycle):
+    g0 = generadortree.generateInstance(name + ' tree', n, n-1)
+    exe(g0)
+    d = 5
+    while d < 100:
+        g1 = generadorconnected.generateInstance(name + ' connected', n, (n*(n-1)*d/100))
+                
+        exe(g1)
+        d += 5
+    
+    gc = generadorcomplete.generateInstance(name + ' complete', n, n)
+    exe(gc)
   
