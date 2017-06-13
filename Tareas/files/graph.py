@@ -251,16 +251,16 @@ class Graph:
     
     def iscomplete(self):
         result = True
-        with multiprocessing.Pool() as pool:
-            workers = []
-            results = []
-            for v in self._vertices:
-                workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
-            for w in workers:
-                result = result and w.get()
+#        with multiprocessing.Pool() as pool:
+#            workers = []
+#            results = []
+#            for v in self._vertices:
+#                workers.append(pool.apply_async(func=Graph.vertexcomplete, args=(self, v,)))
+#            for w in workers:
+#                result = result and w.get()
         
-#        for v in self.vertices:
-#            result = result and self.vertexcomplete(v)
+        for v in self.vertices:
+            result = result and self.vertexcomplete(v)
         return result
 
     def istree(self):
