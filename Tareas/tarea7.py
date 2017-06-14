@@ -8,10 +8,10 @@ from heapq import heappop, heappush
 import random
 # se crea un grafo conecntado con nu valor de nuemero de vertices y el numero de veces que se ejecutara la aproximacion
 no_cycles = 10
-no_vertices = 15
+no_vertices = 20
 
 
-dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, 25 )
+dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, no_vertices )
 dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, 5)
 generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.connected,distribution_weight = dw,distribution_degree = dd, directed = True )
 
@@ -31,9 +31,21 @@ for i in range(no_cycles):
         #print(se)
         scover.add(se[0])
         scover.add(se[1])
+        se1, se2 = False, False
         for e in edg:
-            if se[0] in e or se[1] in e:
+            r = False
+            if se[0] in e:
                 #print(se, e, se[0] in e, se[1] in e, len(edg))
+                se1=True
+                r=True
+            if se[1] in e:
+                se2=True
+                r=True
+            if r:
                 edg.remove(e)
+        if not se1:
+            scover.remove(se[0])
+        if not se2:
+            scover.remove(se[1])
     #se imprime el cubrimiento
-    print('res ', i, ' ', scover, len(scover))
+    print( i, len(scover))

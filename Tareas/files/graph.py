@@ -321,7 +321,7 @@ class Graph:
             else:
                 v= self.vertices[v.id]
         levels = {}
-        levels[v.id] = 0
+        levels[v.id] = (0,v.id)
         sig = [v]
         #print(v.id, levels[v.id])
         while len(sig) > 0:
@@ -329,7 +329,7 @@ class Graph:
             for l in sig:
                 for n in l.neighbors:   
                     if n not in levels:
-                        levels[n]= levels[l.id]+1
+                        levels[n]= (levels[l.id][0]+1, l.id)
                         mark.append(self[n])
             sig = mark            
         return levels
@@ -482,7 +482,40 @@ class Graph:
                 result = self.findpath(n, w, path + [((v,n), residual)])
                 if result != None:
                     return result
-                
+
+    def findshortpath(self, v,w, path=[], capacity_key='capacity', flow_key='flow'):
+        if v is Vertex:
+            v = v.id
+        if w is Vertex:
+            w = w.id
+        if v==w:
+            return path
+        #do a bfs from w to v
+        levels = {}
+        levels[v] = (0,None)
+        sig = [v]
+        #print(v.id, levels[v.id])
+        while len(sig) > 0:
+            mark = []
+            for l in self.vertices[sig]:
+                for n in l.neighbors:                    
+                    if capacity_key not in self.vertices[v].neighbors[n].keys():
+                         self.vertices[v].neighbors[n][capacity_key] = self.vertices[v].neighbors[n]['weight']
+                    if capacity_key not in self.vertices[n].inneighbors[v].keys():
+                        self.vertices[n].inneighbors[v][capacity_key] = self.vertices[n].inneighbors[v]['weight']                
+                    if flow_key not in self.vertices[v].neighbors[n].keys():
+                        self.vertices[v].neighbors[n][flow_key] = 0
+                    if flow_key not in self.vertices[n].inneighbors[v].keys():
+                                self.vertices[n].inneighbors[v][flow_key] = 0
+                    residual = self.vertices[v].neighbors[n][capacity_key]
+                    if n not in levels and residual > 0:
+                        levels[n]= (levels[l.id][0]+1, l.id)
+                        mark.append(n)
+            sig = mark            
+        #for vl in levels:
+        return path    
+            
+
     def maxflow(self, s, t, capacity_key='capacity', flow_key='flow'):
         result = 0
         path = self.findpath(s,t,[])

@@ -20,7 +20,7 @@ def qs(arr):
 def rndar(lon):
     arr = []
     for r in range(lon):
-        arr.append(random())
+        arr.append(random.randint(0, lon))
     return arr
 
 l = 8
