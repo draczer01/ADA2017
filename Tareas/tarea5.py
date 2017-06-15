@@ -1,25 +1,32 @@
-#flujos y arboles de expancion Ford-fulkerson y grafos densos y grandes
+#flujos y arboles de expancion Ford-fulkerson y grafos densos,grandes y normales
 #archivos necesarios dentro de la carpeta files
 # graph.py, InstanciesGenerator.py
 from files import graph
 from files import InstanciesGenerator
 import random
+import time
 # se genera un grafo con densidad alta y con una cantidad de vertices alta
-no_vertices = 105 
+no_vertices = 1005
 
 
-dd = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, no_vertices-1 )
-dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, 10)
-generador = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.connected,distribution_weight = dw,distribution_degree = dd, directed = False )
+ddn = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, no_vertices-1 )
+dw = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.normal, 15, 3)
+generadorcon = InstanciesGenerator.GraphInstancesGenerator(graphtype = InstanciesGenerator.GraphTypes.connected,distribution_weight = dw,distribution_degree = ddn, directed = False )
 
-g = generador.generateInstance('Test', no_vertices, round((no_vertices-1)*.8*no_vertices))
-# se selccionan al azar 3 vertices para calcular el fluje en ellas
-a = random.choice(g.vertices)
-b = random.choice(g.vertices)
-while len(g.vertices)>2 and b.id == a.id:
-    b = random.choice(g.vertices)
-# se calcua el flujo maximo entre los 2
-mf = g.maxflow(a.id,b.id)
-print(g.to_string(sv=False))
-print('Max flow: ', a.id, b.id, mf )
+density = [0.8,0.85,0.90,0.95]
+replicas = 5
+for d in density:
+    gc = generadorcon.generateInstance('Test', no_vertices, round((no_vertices-1)*d*no_vertices))
+    a = random.choice(gc.vertices)    
+    for r in range(replicas):
+    # se selccionan al azar 3 vertices para calcular el fluje en ellas
+        b = random.choice(gc.vertices)
+        while len(gc.vertices)>2 and b.id == a.id:
+            b = random.choice(g.vertices)
+            # se calcua el flujo maximo entre los 2
+        ti = time.clock()
+        mf = gc.shortaugmentingmaxflow(a.id,b.id)
+        tf = time.clock()-ti
+        #print(g.to_string(sv=False))
+        print(no_vertices,round((no_vertices-1)*d*no_vertices),r, mf, tf)
 

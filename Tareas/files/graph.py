@@ -483,7 +483,8 @@ class Graph:
                 if result != None:
                     return result
 
-    def findshortpath(self, v,w, path=[], capacity_key='capacity', flow_key='flow'):
+    def findshortpath(self, v,w, capacity_key='capacity', flow_key='flow'):
+        path = []
         if v is Vertex:
             v = v.id
         if w is Vertex:
@@ -497,29 +498,40 @@ class Graph:
         #print(v.id, levels[v.id])
         while len(sig) > 0:
             mark = []
-            for l in self.vertices[sig]:
-                for n in l.neighbors:                    
-                    if capacity_key not in self.vertices[v].neighbors[n].keys():
-                         self.vertices[v].neighbors[n][capacity_key] = self.vertices[v].neighbors[n]['weight']
-                    if capacity_key not in self.vertices[n].inneighbors[v].keys():
-                        self.vertices[n].inneighbors[v][capacity_key] = self.vertices[n].inneighbors[v]['weight']                
-                    if flow_key not in self.vertices[v].neighbors[n].keys():
-                        self.vertices[v].neighbors[n][flow_key] = 0
-                    if flow_key not in self.vertices[n].inneighbors[v].keys():
-                                self.vertices[n].inneighbors[v][flow_key] = 0
-                    residual = self.vertices[v].neighbors[n][capacity_key]
+            for l in sig:
+                for n in self.vertices[l].neighbors:                    
+                    if capacity_key not in self.vertices[l].neighbors[n].keys():
+                         self.vertices[l].neighbors[n][capacity_key] = self.vertices[l].neighbors[n]['weight']
+                    if capacity_key not in self.vertices[n].inneighbors[l].keys():
+                        self.vertices[n].inneighbors[l][capacity_key] = self.vertices[n].inneighbors[l]['weight']                
+                    if flow_key not in self.vertices[l].neighbors[n].keys():
+                        self.vertices[l].neighbors[n][flow_key] = 0
+                    if flow_key not in self.vertices[n].inneighbors[l].keys():
+                                self.vertices[n].inneighbors[l][flow_key] = 0
+
+                    residual = self.vertices[l].neighbors[n][capacity_key]
+
                     if n not in levels and residual > 0:
-                        levels[n]= (levels[l.id][0]+1, l.id)
+                        levels[n]= (levels[l][0]+1, l)
+                        if n == w:
+                            ac = n
+                            prv = levels[ac][1]
+                            while prv is not None:
+                                nr = self.vertices[prv].neighbors[ac][capacity_key]
+                                path.append(((prv,ac),nr))
+                                ac=prv
+                                prv = levels[ac][1]
+                            return path    
                         mark.append(n)
             sig = mark            
         #for vl in levels:
-        return path    
+        return path
             
 
-    def maxflow(self, s, t, capacity_key='capacity', flow_key='flow'):
+    def fordfulkersonmaxflow(self, s, t, capacity_key='capacity', flow_key='flow'):
         result = 0
         path = self.findpath(s,t,[])
-        while len(path) > 0:
+        while path is not None and len(path) > 0:
             flow = min(res for edge, res in path)
             for edge, res in path:
                 u, v = edge
@@ -536,3 +548,29 @@ class Graph:
                 result += self.vertices[t].inneighbors[n][flow_key]
         return result
 
+    def shortaugmentingmaxflow(self, s, t, capacity_key='capacity', flow_key='flow'):
+        result = 0
+        path = self.findshortpath(s,t)
+        while len(path) > 0:
+            flow = min(res for edge, res in path)
+            for edge, res in path:
+                u, v = edge
+                self.vertices[u].neighbors[v][flow_key] += flow
+                self.vertices[v].inneighbors[u][flow_key] += flow
+                
+                self.vertices[u].neighbors[v][capacity_key] -= flow
+                self.vertices[v].inneighbors[u][capacity_key] -= flow                
+            path = self.findshortpath(s,t)
+            if type(path) is type(None):
+                path =[]
+        for n in self.vertices[t].inneighbors:
+            if flow_key in self.vertices[t].inneighbors[n]:
+                result += self.vertices[t].inneighbors[n][flow_key]
+        return result
+
+    def maxflow(self, s, t, capacity_key='capacity', flow_key='flow', algtype=1):
+        if algtype ==1:
+            return self.shortaugmentingmaxflow(s,t,capacity_key, flow_key)
+        else:
+            return self.fordfulkersonmaxflow(s,t,capacity_key, flow_key)
+                
