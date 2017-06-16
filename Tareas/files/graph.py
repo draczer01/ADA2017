@@ -574,3 +574,10 @@ class Graph:
         else:
             return self.fordfulkersonmaxflow(s,t,capacity_key, flow_key)
                 
+    def resetflow(self,capacity_key='capacity', flow_key='flow'):
+        for v in self.vertices:
+            for n in self.vertices[v].neighbors:                    
+                self.vertices[v].neighbors[n][capacity_key] = self.vertices[v].neighbors[n]['weight']
+                self.vertices[n].inneighbors[v][capacity_key] = self.vertices[n].inneighbors[v]['weight']                
+                self.vertices[v].neighbors[n][flow_key] = 0
+                self.vertices[n].inneighbors[v][flow_key] = 0

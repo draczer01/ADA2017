@@ -6,7 +6,7 @@ from files import InstanciesGenerator
 import random
 import time
 # se genera un grafo con densidad alta y con una cantidad de vertices alta
-no_vertices = 1005
+no_vertices = 205
 
 
 ddn = InstanciesGenerator.Distribution(InstanciesGenerator.DistributionsTypes.uniform, 1, no_vertices-1 )
@@ -22,11 +22,14 @@ for d in density:
     # se selccionan al azar 3 vertices para calcular el fluje en ellas
         b = random.choice(gc.vertices)
         while len(gc.vertices)>2 and b.id == a.id:
-            b = random.choice(g.vertices)
+            b = random.choice(gc.vertices)
             # se calcua el flujo maximo entre los 2
+        gc.resetflow()
         ti = time.clock()
         mf = gc.shortaugmentingmaxflow(a.id,b.id)
         tf = time.clock()-ti
-        #print(g.to_string(sv=False))
-        print(no_vertices,round((no_vertices-1)*d*no_vertices),r, mf, tf)
+        ti = time.clock()
+        mb = gc.breadthfirstsearch(a.id)
+        tfb = time.clock()-ti
+        print(no_vertices,round((no_vertices-1)*d*no_vertices),r, mf, tf, tfb)
 

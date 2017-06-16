@@ -147,8 +147,15 @@ class GraphInstancesGenerator():
             return self.generateComplete(name, novertex)
         
         g = self.generateTree(name, novertex, random.randint(1,novertex)-1)
-        ne = g.cardinal-1
-        vl = list(g.vertices)
+        
+        if self.directed:
+            ne=g.cardinal-1
+        else:
+            ne=2*(g.cardinal-1)
+        vl = list(g.vertices)        
+        for vx in vl:
+            if len(g.vertices[vx].neighbors) == g.cardinal:
+                vl.remove(vx)
         random.shuffle(vl)
         av = vl.pop()
         while ne < noedges:
@@ -157,30 +164,41 @@ class GraphInstancesGenerator():
             avl.remove(av)
             for n in g[av].neighbors:
                 avl.remove(n)
-            degree =  self.getdegreevalue(noedges, novertex) - len(g[av].neighbors)
-            #print('n,d',ne, noedges ,len(g[av].neighbors),degree)
-            if degree < 0:
-                rest = g.cardinal - len(g[av].neighbors)
-                if rest >0:
-                    degree = random.choice(range(rest, g.cardinal))
-                else:
-                    degree = 0
+            degree =  min(self.getdegreevalue(noedges, novertex), novertex-1)
+            rest = degree - len(g[av].neighbors)
+            #print('n,d',ne, noedges,av ,len(g[av].neighbors),degree, rest)
+            if rest <= 0:
+                if degree < g.cardinal:
+                    rest = g.cardinal - len(g[av].neighbors)
+                    if rest > 1:
+                        degree = random.choice(range(1, rest))
+                    else:
+                        degree = 1
+                        
             if len(avl) < degree:
                 degree = len(avl)
+            #print(ne, noedges, degree, av, vl)
             for i in range(degree):
                 nv = avl.pop()
                 w = self.getweightvalue()
                 g.add_edge(av,nv,weight=w)
-                ne+=2
+                if self.directed:
+                    ne+=1
+                else:
+                    ne+=2
                 if ne >= noedges:
                     break
             if len(vl)>0:
                 av = vl.pop()
             else:
 #                print('r')
+                #print('s', [(x,len(g.vertices[x].neighbors)) for x in g.vertices])
                 vl = list(g.vertices)
-                av = vl.pop()                
-            
+                for vx in vl:
+                    if len(g.vertices[vx].neighbors) == g.cardinal-1:
+                        vl.remove(vx)
+                random.shuffle(vl)
+                av = vl.pop()                    
         return g
              
     def generateInstance(self, name, novertex, noedges):
