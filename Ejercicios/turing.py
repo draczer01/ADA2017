@@ -14,7 +14,7 @@ class turing_machine:
     def strart(self):
         result = False
         if self.current_state == 's':
-            while (self.current_state!= 'Alto' or self.current_state!= 'Si' or self.current_state!= 'No' or self.current_state !='Error'):
+            while (self.current_state!= 'Alto' and self.current_state!= 'Si' and self.current_state!= 'No' and self.current_state !='Error'):
                 car = self.cinta[self.current_position]
                 tupla = "('" + self.current_state + "', '" + car + "')"
                 if  tupla in self.tabla_transicion:
