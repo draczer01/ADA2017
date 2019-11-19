@@ -38,17 +38,17 @@ class turing_machine:
         return result
 
 
+class turing:
+ MT = dict()
+ MT["('s', '0')"] = tupla_transicion('s', '0', 'r')
+ MT["('s', '1')"] = tupla_transicion('s', '1', 'r')
+ MT["('s', '@')"] = tupla_transicion('t', '@', 'l')
+ MT["('t', '1')"] = tupla_transicion('No', '1', 'o')
+ MT["('t', '0')"] = tupla_transicion('Si', '0', 'o')
 
-# MT = dict()
-# MT["('s', '0')"] = tupla_transicion('s', '0', 'r')
-# MT["('s', '1')"] = tupla_transicion('s', '1', 'r')
-# MT["('s', '@')"] = tupla_transicion('t', '@', 'l')
-# MT["('t', '1')"] = tupla_transicion('No', '1', 'o')
-# MT["('t', '0')"] = tupla_transicion('Si', '0', 'o')
-#
-# stri = '01110@'
-#
-# tm = turing_machine(MT,stri)
-# result = tm.strart()
-# print(result)
-# print(tm.current_state, tm.current_position)
+ stri = '01110@'
+
+ tm = turing_machine(MT,stri)
+ result = tm.strart()
+ print(result)
+ print(tm.current_state, tm.current_position)
